@@ -1,9 +1,15 @@
-import { Search, UserCircle, Loader2 } from "lucide-react";
+import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const PAGE_SIZE = 10;
 
@@ -17,6 +23,7 @@ interface Ad {
   end_date: string;
   description: string;
   created_at: string;
+  user_id: string;
 }
 
 const Index = () => {
@@ -29,6 +36,8 @@ const Index = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
+  const [adOwner, setAdOwner] = useState<{ ime: string; prezime: string; telefon: string } | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const offsetRef = useRef(0);
@@ -62,7 +71,7 @@ const Index = () => {
 
     let query = supabase
       .from("ads")
-      .select("id, category, location, price, currency, start_date, end_date, description, created_at")
+      .select("id, category, location, price, currency, start_date, end_date, description, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .range(currentOffset, currentOffset + PAGE_SIZE - 1);
@@ -123,6 +132,19 @@ const Index = () => {
     const date = new Date(d);
     return date.toLocaleDateString("sr-Latn-RS", { day: "2-digit", month: "2-digit", year: "numeric" });
   };
+
+  const openAdDetails = async (ad: Ad) => {
+    setSelectedAd(ad);
+    setAdOwner(null);
+    const { data } = await supabase
+      .from("profiles")
+      .select("ime, prezime, telefon")
+      .eq("user_id", ad.user_id)
+      .single();
+    if (data) setAdOwner(data);
+  };
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <div className="min-h-screen bg-background">
@@ -194,7 +216,8 @@ const Index = () => {
             {ads.map((ad) => (
               <div
                 key={ad.id}
-                className="group flex items-center justify-between rounded-2xl border border-border bg-card px-6 py-5 shadow-sm transition-all duration-200 hover:-translate-y-[3px] hover:shadow-md"
+                onClick={() => openAdDetails(ad)}
+                className="group flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-card px-6 py-5 shadow-sm transition-all duration-200 hover:-translate-y-[3px] hover:shadow-md"
                 style={{
                   background: "linear-gradient(135deg, hsl(220 15% 96%), hsl(220 15% 93%))",
                 }}
@@ -238,6 +261,56 @@ const Index = () => {
           <div ref={sentinelRef} className="h-4" />
         </main>
       </div>
+
+      {/* Scroll to top */}
+      {scrolled && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition hover:bg-primary/80"
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
+
+      {/* Ad detail dialog */}
+      <Dialog open={!!selectedAd} onOpenChange={(open) => !open && setSelectedAd(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl">{selectedAd?.category}</DialogTitle>
+          </DialogHeader>
+          {selectedAd && (
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <FileText size={16} className="shrink-0" />
+                <p className="text-foreground">{selectedAd.description}</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin size={16} className="shrink-0" />
+                <span>{selectedAd.location}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Banknote size={16} className="shrink-0" />
+                <span className="font-medium text-foreground">{selectedAd.price} {selectedAd.currency}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar size={16} className="shrink-0" />
+                <span>{formatDate(selectedAd.start_date)} – {formatDate(selectedAd.end_date)}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <User size={16} className="shrink-0" />
+                {adOwner ? (
+                  <span>{adOwner.ime} {adOwner.prezime}{adOwner.telefon ? ` • ${adOwner.telefon}` : ""}</span>
+                ) : (
+                  <span className="animate-pulse">Učitavanje...</span>
+                )}
+              </div>
+              <button className="mt-2 w-full rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                PRIJAVI SE
+              </button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
