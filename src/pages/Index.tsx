@@ -363,6 +363,7 @@ const Index = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       if (!user) { navigate("/auth"); return; }
+                      setSelectedAd(null);
                       setApplyAd(ad);
                     }}
                     className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80"
