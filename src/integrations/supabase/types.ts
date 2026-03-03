@@ -206,7 +206,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      accept_application: {
+        Args: { p_application_id: string; p_notification_id: string }
+        Returns: Json
+      }
+      reject_application: {
+        Args: { p_application_id: string; p_notification_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
