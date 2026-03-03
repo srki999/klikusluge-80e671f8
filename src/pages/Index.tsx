@@ -439,6 +439,7 @@ const Index = () => {
                 >
                   PRIJAVI SE
                 </button>
+              )}
             </div>
           )}
         </DialogContent>
