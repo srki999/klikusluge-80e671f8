@@ -1,4 +1,6 @@
-import { Search } from "lucide-react";
+import { Search, UserCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import logo from "@/assets/logo.png";
 
 const ads = [
@@ -9,6 +11,9 @@ const ads = [
 ];
 
 const Index = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-[1300px] overflow-hidden rounded-2xl shadow-2xl">
@@ -21,7 +26,12 @@ const Index = () => {
           }}
         >
           <img src={logo} alt="Klik Usluge" className="h-24 w-auto" />
-          <div className="h-10 w-10 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15" />
+          <button
+            onClick={() => navigate(user ? "/profile" : "/auth")}
+            className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 transition hover:bg-primary-foreground/25"
+          >
+            <UserCircle size={24} className="text-primary-foreground" />
+          </button>
         </header>
 
         {/* Body */}
