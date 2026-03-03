@@ -1,22 +1,38 @@
-import { Search, UserCircle } from "lucide-react";
+import { Search, UserCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-const ads = [
-  { id: 1, title: "OGLAS 1" },
-  { id: 2, title: "OGLAS 2" },
-  { id: 3, title: "OGLAS 3" },
-  { id: 4, title: "OGLAS 4" },
-];
+const PAGE_SIZE = 10;
+
+interface Ad {
+  id: string;
+  category: string;
+  location: string;
+  price: number;
+  currency: string;
+  start_date: string;
+  end_date: string;
+  description: string;
+  created_at: string;
+}
 
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [ads, setAds] = useState<Ad[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const offsetRef = useRef(0);
 
+  // Fetch user name
   useEffect(() => {
     if (user) {
       supabase.from("profiles").select("ime, prezime").eq("user_id", user.id).single()
@@ -28,84 +44,168 @@ const Index = () => {
     }
   }, [user]);
 
+  // Track scroll for header shadow
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fetch ads
+  const fetchAds = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("ads")
+      .select("id, category, location, price, currency, start_date, end_date, description, created_at")
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .range(offsetRef.current, offsetRef.current + PAGE_SIZE - 1);
+
+    if (!error && data) {
+      setAds((prev) => [...prev, ...data]);
+      offsetRef.current += data.length;
+      if (data.length < PAGE_SIZE) setHasMore(false);
+    }
+    setLoading(false);
+    setInitialLoad(false);
+  }, [loading, hasMore]);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchAds();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (observerRef.current) observerRef.current.disconnect();
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          fetchAds();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (sentinelRef.current) observerRef.current.observe(sentinelRef.current);
+    return () => observerRef.current?.disconnect();
+  }, [fetchAds, hasMore, loading]);
+
+  const formatDate = (d: string) => {
+    const date = new Date(d);
+    return date.toLocaleDateString("sr-Latn-RS", { day: "2-digit", month: "2-digit", year: "numeric" });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-[1300px] overflow-hidden rounded-2xl shadow-2xl">
-        {/* Header */}
-        <header
-          className="flex items-center justify-between px-4 py-2"
+    <div className="min-h-screen bg-background">
+      {/* Fixed Header */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-2 transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`}
+        style={{
+          background: "linear-gradient(135deg, hsl(225 35% 42%), hsl(225 40% 62%))",
+        }}
+      >
+        <img
+          src={logo}
+          alt="Klik Usluge"
+          className="h-24 w-auto cursor-pointer"
+          onClick={() => navigate("/")}
+        />
+        <button
+          onClick={() => navigate(user ? "/profile" : "/auth")}
+          className="flex items-center gap-2 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 px-3 py-2 transition hover:bg-primary-foreground/25"
+        >
+          <UserCircle size={24} className="text-primary-foreground" />
+          {userName && (
+            <span className="text-sm font-medium text-primary-foreground">{userName}</span>
+          )}
+        </button>
+      </header>
+
+      {/* Spacer for fixed header */}
+      <div className="h-[104px]" />
+
+      {/* Body */}
+      <div className="mx-auto flex w-full max-w-[1300px]">
+        {/* Sidebar */}
+        <aside
+          className="sticky top-[104px] hidden h-[calc(100vh-104px)] w-64 shrink-0 p-5 md:block"
           style={{
-            background:
-              "linear-gradient(135deg, hsl(225 35% 42%), hsl(225 40% 62%))",
+            background: "linear-gradient(180deg, hsl(30 100% 50%), hsl(30 95% 60%))",
           }}
         >
-          <img src={logo} alt="Klik Usluge" className="h-24 w-auto" />
           <button
-            onClick={() => navigate(user ? "/profile" : "/auth")}
-            className="flex items-center gap-2 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 px-3 py-2 transition hover:bg-primary-foreground/25"
+            onClick={() => navigate(user ? "/dodaj-oglas" : "/auth")}
+            className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:bg-secondary-foreground/10"
           >
-            <UserCircle size={24} className="text-primary-foreground" />
-            {userName && (
-              <span className="text-sm font-medium text-primary-foreground">{userName}</span>
-            )}
+            DODAJ OGLAS
           </button>
-        </header>
+        </aside>
 
-        {/* Body */}
-        <div className="flex min-h-[520px]">
-          {/* Sidebar */}
-          <aside
-            className="hidden w-64 shrink-0 p-5 md:block"
-            style={{
-              background:
-                "linear-gradient(180deg, hsl(30 100% 50%), hsl(30 95% 60%))",
-            }}
-          >
-            <button
-              onClick={() => navigate(user ? "/dodaj-oglas" : "/auth")}
-              className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:bg-secondary-foreground/10"
-            >
-              DODAJ OGLAS
+        {/* Main content */}
+        <main className="min-h-[calc(100vh-104px)] flex-1 bg-muted p-6 md:p-8">
+          {/* Search bar */}
+          <div className="mx-auto mb-8 flex max-w-2xl overflow-hidden rounded-xl border border-border bg-popover shadow-sm">
+            <input
+              type="text"
+              placeholder="Pretraži..."
+              className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
+              readOnly
+            />
+            <button className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
+              <Search size={18} />
             </button>
-          </aside>
+          </div>
 
-          {/* Main content */}
-          <main className="flex-1 bg-muted p-6 md:p-8">
-            {/* Search bar */}
-            <div className="mx-auto mb-8 flex max-w-2xl overflow-hidden rounded-xl border border-border bg-popover shadow-sm">
-              <input
-                type="text"
-                placeholder="Search"
-                className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                readOnly
-              />
-              <button className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
-                <Search size={18} />
-              </button>
-            </div>
-
-            {/* Ad cards */}
-            <div className="space-y-4">
-              {ads.map((ad) => (
-                <div
-                  key={ad.id}
-                  className="flex items-center justify-between rounded-2xl border border-border bg-card px-6 py-5 shadow-sm"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, hsl(220 15% 96%), hsl(220 15% 93%))",
-                  }}
-                >
+          {/* Ad cards */}
+          <div className="space-y-4">
+            {ads.map((ad) => (
+              <div
+                key={ad.id}
+                className="group flex items-center justify-between rounded-2xl border border-border bg-card px-6 py-5 shadow-sm transition-all duration-200 hover:-translate-y-[3px] hover:shadow-md"
+                style={{
+                  background: "linear-gradient(135deg, hsl(220 15% 96%), hsl(220 15% 93%))",
+                }}
+              >
+                <div className="space-y-1">
                   <span className="text-lg font-semibold text-foreground tracking-wide">
-                    {ad.title}
+                    {ad.category}
                   </span>
-                  <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:opacity-90">
-                    PRIJAVI SE
-                  </button>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                    <span>{ad.location}</span>
+                    <span className="font-medium text-foreground">
+                      {ad.price} {ad.currency}
+                    </span>
+                    <span>
+                      {formatDate(ad.start_date)} – {formatDate(ad.end_date)}
+                    </span>
+                  </div>
                 </div>
-              ))}
+                <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                  PRIJAVI SE
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Loading indicator */}
+          {loading && (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
-          </main>
-        </div>
+          )}
+
+          {/* Empty state */}
+          {!initialLoad && ads.length === 0 && !loading && (
+            <p className="py-16 text-center text-muted-foreground">
+              Trenutno nema dostupnih oglasa.
+            </p>
+          )}
+
+          {/* Infinite scroll sentinel */}
+          <div ref={sentinelRef} className="h-4" />
+        </main>
       </div>
     </div>
   );
