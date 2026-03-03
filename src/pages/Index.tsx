@@ -210,15 +210,18 @@ const Index = () => {
         <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold uppercase tracking-widest text-primary-foreground select-none">
           KLIK USLUGE
         </h1>
-        <button
-          onClick={() => navigate(user ? "/profile" : "/auth")}
-          className="flex items-center gap-2 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 px-3 py-2 transition hover:bg-primary-foreground/25"
-        >
-          <UserCircle size={24} className="text-primary-foreground" />
-          {userName && (
-            <span className="text-sm font-medium text-primary-foreground">{userName}</span>
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <button
+            onClick={() => navigate(user ? "/profile" : "/auth")}
+            className="flex items-center gap-2 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 px-3 py-2 transition hover:bg-primary-foreground/25"
+          >
+            <UserCircle size={24} className="text-primary-foreground" />
+            {userName && (
+              <span className="text-sm font-medium text-primary-foreground">{userName}</span>
+            )}
+          </button>
+        </div>
       </header>
 
       {/* Spacer for fixed header */}
