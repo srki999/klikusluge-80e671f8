@@ -80,6 +80,9 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle, currency = "RSD", ma
             {price && priceNum <= 0 && (
               <p className="mt-1 text-xs text-destructive">Cena mora biti veća od 0</p>
             )}
+            {price && priceNum > maxPrice && (
+              <p className="mt-1 text-xs text-destructive">Ponuda ne može biti veća od {maxPrice} {currency}</p>
+            )}
           </div>
 
           <div>
