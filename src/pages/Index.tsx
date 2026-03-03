@@ -4,6 +4,10 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
+import badgeBronza from "@/assets/badge-bronza.png";
+import badgeSrebro from "@/assets/badge-srebro.png";
+import badgeZlato from "@/assets/badge-zlato.png";
+import badgePlatina from "@/assets/badge-platina.png";
 import {
   Dialog,
   DialogContent,
