@@ -7,6 +7,13 @@ import logo from "@/assets/logo.png";
 
 const AD_BASE_PRICE = 500; // RSD
 
+const prominencePriceMap: Record<number, number> = {
+  1: 400,
+  2: 800,
+  3: 1200,
+  4: 1600,
+};
+
 const discountMap: Record<string, number> = {
   bronza: 10,
   srebro: 15,
