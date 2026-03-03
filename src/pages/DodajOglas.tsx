@@ -359,6 +359,20 @@ const DodajOglas = () => {
             {errors.price && <p className={errorClass}>{errors.price}</p>}
           </div>
 
+          {/* Nivo istiskivanja */}
+          <div>
+            <Select value={String(prominenceLevel)} onValueChange={v => setProminenceLevel(Number(v))}>
+              <SelectTrigger className="w-full rounded-xl border-border bg-popover py-3 text-sm">
+                <SelectValue placeholder="Izaberite nivo istiskivanja" />
+              </SelectTrigger>
+              <SelectContent>
+                {prominenceLevels.map(p => (
+                  <SelectItem key={p.level} value={String(p.level)}>{p.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Opis */}
           <div>
             <textarea

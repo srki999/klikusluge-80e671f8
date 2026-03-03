@@ -124,16 +124,17 @@ const Placanje = () => {
 
             <div className="mb-6 rounded-xl border border-border bg-muted/50 p-4 text-center">
               <p className="text-lg font-bold text-foreground">{ad.category}</p>
+              <p className="text-xs text-muted-foreground">Objava: {AD_BASE_PRICE} RSD + Istiskivanje nivo {ad.prominence_level || 1}: {prominencePrice} RSD</p>
               {discount > 0 ? (
                 <>
-                  <p className="text-sm text-muted-foreground line-through">{AD_BASE_PRICE} RSD</p>
+                  <p className="text-sm text-muted-foreground line-through">{totalBase} RSD</p>
                   <p className="text-2xl font-extrabold text-foreground">{discountedPrice} RSD</p>
                   <p className="mt-1 text-xs font-semibold text-green-600">
                     Popust {discount}% ({subPlan?.toUpperCase()} pretplata)
                   </p>
                 </>
               ) : (
-                <p className="text-2xl font-extrabold text-foreground">{AD_BASE_PRICE} RSD</p>
+                <p className="text-2xl font-extrabold text-foreground">{totalBase} RSD</p>
               )}
               <p className="mt-1 text-xs text-muted-foreground">{ad.location}</p>
             </div>
