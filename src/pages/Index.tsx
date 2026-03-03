@@ -331,8 +331,8 @@ const Index = () => {
 
           {/* Empty state */}
           {!initialLoad && ads.length === 0 && !loading && (
-            <p className="py-16 text-center text-muted-foreground">
-              Trenutno nema dostupnih oglasa.
+            <p className="py-16 text-center text-2xl font-bold uppercase tracking-wide text-muted-foreground/60">
+              Nema oglasa koji odgovaraju vašoj pretrazi
             </p>
           )}
 
