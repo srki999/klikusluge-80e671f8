@@ -251,7 +251,7 @@ const Index = () => {
           {/* Search bar */}
           <form
             onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
-            className="mx-auto mb-8 flex max-w-2xl overflow-hidden rounded-xl border border-border bg-popover shadow-sm"
+            className="mb-8 flex overflow-hidden rounded-xl border border-border bg-popover shadow-sm"
           >
             <input
               type="text"
