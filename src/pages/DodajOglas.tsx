@@ -359,20 +359,6 @@ const DodajOglas = () => {
             {errors.price && <p className={errorClass}>{errors.price}</p>}
           </div>
 
-          {/* Nivo istiskivanja */}
-          <div>
-            <Select value={String(prominenceLevel)} onValueChange={v => setProminenceLevel(Number(v))}>
-              <SelectTrigger className="w-full rounded-xl border-border bg-popover py-3 text-sm">
-                <SelectValue placeholder="Izaberite nivo istiskivanja" />
-              </SelectTrigger>
-              <SelectContent>
-                {prominenceLevels.map(p => (
-                  <SelectItem key={p.level} value={String(p.level)}>{p.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Opis */}
           <div>
             <textarea
@@ -383,6 +369,23 @@ const DodajOglas = () => {
               className={cn(inputClass, "resize-none")}
             />
             {errors.description && <p className={errorClass}>{errors.description}</p>}
+          </div>
+
+          {/* Nivo istiskivanja */}
+          <div>
+            <p className="mb-1 text-sm font-medium text-foreground">
+              Koliko želite da vam se oglas istiskuje? (nivo 1 najmanje – nivo 4 najviše)
+            </p>
+            <Select value={String(prominenceLevel)} onValueChange={v => setProminenceLevel(Number(v))}>
+              <SelectTrigger className="w-full rounded-xl border-border bg-popover py-3 text-sm">
+                <SelectValue placeholder="Izaberite nivo istiskivanja" />
+              </SelectTrigger>
+              <SelectContent>
+                {prominenceLevels.map(p => (
+                  <SelectItem key={p.level} value={String(p.level)}>{p.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Submit */}
