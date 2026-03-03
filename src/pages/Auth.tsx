@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
-import logo from "@/assets/logo.png";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ArrowLeft } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const registerSchema = z.object({
   ime: z.string().trim().min(1, "Ime je obavezno").max(50),
