@@ -18,6 +18,7 @@ interface ApplyModalProps {
   adId: string;
   userId: string;
   adTitle: string;
+  currency?: string;
 }
 
 const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) => {
