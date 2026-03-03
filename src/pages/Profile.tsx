@@ -30,7 +30,14 @@ const Profile = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4" style={{ background: "linear-gradient(135deg, hsl(225 35% 30%), hsl(225 40% 55%))" }}>
-      <div className="w-full max-w-md rounded-2xl bg-card p-8 shadow-2xl">
+       <div className="relative w-full max-w-md rounded-2xl bg-card p-8 shadow-2xl">
+        <button
+          onClick={() => navigate("/")}
+          className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          aria-label="Nazad na početnu"
+        >
+          <ArrowLeft size={20} />
+        </button>
         <div className="mb-6 flex justify-center">
           <img src={logo} alt="Klik Usluge" className="h-20 w-auto" />
         </div>
