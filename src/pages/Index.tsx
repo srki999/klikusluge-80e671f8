@@ -30,6 +30,7 @@ const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [userSub, setUserSub] = useState<{ plan_name: string; end_date: string } | null>(null);
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
