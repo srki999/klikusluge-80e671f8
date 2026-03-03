@@ -205,7 +205,12 @@ const Index = () => {
             MODEL PRETPLATE
           </button>
           {userSub && (
-            <div className="mt-3 rounded-xl border border-secondary-foreground/20 bg-secondary-foreground/10 px-4 py-3 text-center">
+            <div className="mt-3 rounded-xl border border-secondary-foreground/20 bg-secondary-foreground/10 px-4 py-3 flex flex-col items-center">
+              <img
+                src={{ bronza: badgeBronza, srebro: badgeSrebro, zlato: badgeZlato, platina: badgePlatina }[userSub.plan_name] || badgeBronza}
+                alt={userSub.plan_name}
+                className="h-12 w-auto rounded-lg object-contain mb-1"
+              />
               <p className="text-xs font-bold uppercase text-secondary-foreground tracking-wider">{userSub.plan_name}</p>
               <p className="mt-0.5 text-[11px] text-secondary-foreground/80">
                 do {new Date(userSub.end_date).toLocaleDateString("sr-Latn-RS")}
