@@ -90,7 +90,7 @@ const Profile = () => {
 
   const openEdit = (ad: Ad) => {
     setEditAd(ad);
-    setEditForm({ category: ad.category, location: ad.location, price: String(ad.price), description: ad.description });
+    setEditForm({ title: ad.title, category: ad.category, location: ad.location, price: String(ad.price), description: ad.description });
   };
 
   const handleEditSave = async () => {
