@@ -1,4 +1,6 @@
-import { Search } from "lucide-react";
+import { Search, UserCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import logo from "@/assets/logo.png";
 
 const ads = [
