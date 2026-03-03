@@ -14,6 +14,7 @@ import {
 
 interface Ad {
   id: string;
+  title: string;
   category: string;
   location: string;
   price: number;
