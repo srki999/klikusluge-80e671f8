@@ -308,18 +308,25 @@ const DodajOglas = () => {
 
           {/* Cena */}
           <div>
-            <div className="relative">
+            <div className="flex overflow-hidden rounded-xl border border-border bg-popover">
               <input
                 type="number"
                 placeholder="Unesite cifru za izvršavanje zadatka"
                 value={price}
                 onChange={e => { setPrice(e.target.value); setErrors(p => ({ ...p, price: "" })); }}
-                className={cn(inputClass, "pr-16")}
+                className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
                 min="0"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground">
-                RSD
-              </span>
+              <Select value={currency} onValueChange={setCurrency}>
+                <SelectTrigger className="w-24 shrink-0 border-0 border-l border-border rounded-none bg-transparent text-sm font-semibold">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencies.map(c => (
+                    <SelectItem key={c.code} value={c.code}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             {errors.price && <p className={errorClass}>{errors.price}</p>}
           </div>

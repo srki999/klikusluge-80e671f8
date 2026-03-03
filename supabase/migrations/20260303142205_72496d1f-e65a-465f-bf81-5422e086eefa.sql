@@ -1,0 +1,2 @@
+
+ALTER TABLE public.ads ADD COLUMN currency TEXT NOT NULL DEFAULT 'RSD';
