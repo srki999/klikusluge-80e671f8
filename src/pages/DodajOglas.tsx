@@ -146,6 +146,7 @@ const DodajOglas = () => {
         currency,
         description: parsed.data.description,
         status: "pending_payment",
+        prominence_level: prominenceLevel,
       }).select().single();
 
       if (error) {
