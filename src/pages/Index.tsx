@@ -23,6 +23,7 @@ interface Ad {
   end_date: string;
   description: string;
   created_at: string;
+  user_id: string;
 }
 
 const Index = () => {
