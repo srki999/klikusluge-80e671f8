@@ -35,6 +35,8 @@ const Index = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
+  const [adOwner, setAdOwner] = useState<{ ime: string; prezime: string; telefon: string } | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const offsetRef = useRef(0);
