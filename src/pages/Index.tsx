@@ -233,7 +233,7 @@ const Index = () => {
         <aside
           className="sticky top-[104px] hidden h-[calc(100vh-104px)] w-64 shrink-0 p-5 md:block ml-0"
           style={{
-            background: "linear-gradient(180deg, hsl(30 100% 50%), hsl(30 95% 60%))",
+            background: "linear-gradient(180deg, hsl(25 100% 50%), hsl(35 100% 55%), hsl(30 95% 60%))",
           }}
         >
           <button

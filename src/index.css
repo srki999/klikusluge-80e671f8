@@ -38,7 +38,8 @@
 
     --header-gradient-from: 225 35% 42%;
     --header-gradient-to: 225 40% 62%;
-    --sidebar-gradient-from: 30 100% 50%;
+    --sidebar-gradient-from: 25 100% 50%;
+    --sidebar-gradient-via: 35 100% 55%;
     --sidebar-gradient-to: 30 95% 60%;
 
     --sidebar-background: 0 0% 98%;
