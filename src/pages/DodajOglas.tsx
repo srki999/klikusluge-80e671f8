@@ -124,7 +124,7 @@ const DodajOglas = () => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.from("ads").insert({
+      const { data: adData, error } = await supabase.from("ads").insert({
         user_id: user!.id,
         category: parsed.data.category,
         location: parsed.data.location,
@@ -134,7 +134,7 @@ const DodajOglas = () => {
         currency,
         description: parsed.data.description,
         status: "pending_payment",
-      });
+      }).select().single();
 
       if (error) {
         toast.error("Greška pri čuvanju oglasa");
@@ -144,7 +144,7 @@ const DodajOglas = () => {
       }
 
       toast.success("Oglas je sačuvan!");
-      navigate("/placanje");
+      navigate("/placanje", { state: { ad: adData } });
     } catch {
       toast.error("Došlo je do greške");
     }
