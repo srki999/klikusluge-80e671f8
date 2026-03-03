@@ -54,24 +54,49 @@ const Index = () => {
   }, []);
 
   // Fetch ads
-  const fetchAds = useCallback(async () => {
-    if (loading || !hasMore) return;
+  const fetchAds = useCallback(async (reset = false) => {
+    if (loading) return;
+    const currentOffset = reset ? 0 : offsetRef.current;
+    if (!reset && !hasMore) return;
     setLoading(true);
-    const { data, error } = await supabase
+
+    let query = supabase
       .from("ads")
       .select("id, category, location, price, currency, start_date, end_date, description, created_at")
       .eq("status", "active")
       .order("created_at", { ascending: false })
-      .range(offsetRef.current, offsetRef.current + PAGE_SIZE - 1);
+      .range(currentOffset, currentOffset + PAGE_SIZE - 1);
+
+    const term = searchRef.current.trim();
+    if (term) {
+      query = query.or(`category.ilike.%${term}%,location.ilike.%${term}%,description.ilike.%${term}%`);
+    }
+
+    const { data, error } = await query;
 
     if (!error && data) {
-      setAds((prev) => [...prev, ...data]);
-      offsetRef.current += data.length;
-      if (data.length < PAGE_SIZE) setHasMore(false);
+      if (reset) {
+        setAds(data);
+        offsetRef.current = data.length;
+      } else {
+        setAds((prev) => [...prev, ...data]);
+        offsetRef.current += data.length;
+      }
+      setHasMore(data.length >= PAGE_SIZE);
     }
     setLoading(false);
     setInitialLoad(false);
   }, [loading, hasMore]);
+
+  // Search handler
+  const handleSearch = useCallback(() => {
+    searchRef.current = searchTerm;
+    offsetRef.current = 0;
+    setHasMore(true);
+    setAds([]);
+    setInitialLoad(true);
+    fetchAds(true);
+  }, [searchTerm, fetchAds]);
 
   // Initial fetch
   useEffect(() => {
