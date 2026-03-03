@@ -1,3 +1,6 @@
+import { Search } from "lucide-react";
+import logo from "@/assets/logo.png";
+
 const ads = [
   { id: 1, title: "OGLAS 1" },
   { id: 2, title: "OGLAS 2" },
@@ -17,11 +20,7 @@ const Index = () => {
               "linear-gradient(135deg, hsl(225 35% 42%), hsl(225 40% 62%))",
           }}
         >
-          {/* Logo placeholder */}
-          <div className="flex items-center gap-2">
-            <div className="h-10 w-24 rounded-lg bg-primary-foreground/20" />
-          </div>
-          {/* User placeholder */}
+          <img src={logo} alt="Klik Usluge" className="h-12 w-auto" />
           <div className="h-10 w-10 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15" />
         </header>
 
@@ -35,7 +34,7 @@ const Index = () => {
                 "linear-gradient(180deg, hsl(30 100% 50%), hsl(30 95% 60%))",
             }}
           >
-            <button className="w-full rounded-xl bg-secondary-foreground/0 border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:bg-secondary-foreground/10">
+            <button className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:bg-secondary-foreground/10">
               Prijavi novi oglas
             </button>
           </aside>
@@ -50,9 +49,9 @@ const Index = () => {
                 className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
                 readOnly
               />
-              <div className="flex w-12 items-center justify-center bg-primary/90">
-                <div className="h-4 w-4 rounded-sm bg-primary-foreground/40" />
-              </div>
+              <button className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
+                <Search size={18} />
+              </button>
             </div>
 
             {/* Ad cards */}
