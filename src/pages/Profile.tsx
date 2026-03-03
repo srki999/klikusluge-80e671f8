@@ -30,6 +30,45 @@ const categories = [
   "Drugo",
 ];
 
+const countryCodes = [
+  { code: "+381", country: "🇷🇸 Srbija", flag: "🇷🇸" },
+  { code: "+382", country: "🇲🇪 Crna Gora", flag: "🇲🇪" },
+  { code: "+385", country: "🇭🇷 Hrvatska", flag: "🇭🇷" },
+  { code: "+387", country: "🇧🇦 BiH", flag: "🇧🇦" },
+  { code: "+389", country: "🇲🇰 S. Makedonija", flag: "🇲🇰" },
+  { code: "+386", country: "🇸🇮 Slovenija", flag: "🇸🇮" },
+  { code: "+43", country: "🇦🇹 Austrija", flag: "🇦🇹" },
+  { code: "+49", country: "🇩🇪 Nemačka", flag: "🇩🇪" },
+  { code: "+41", country: "🇨🇭 Švajcarska", flag: "🇨🇭" },
+  { code: "+44", country: "🇬🇧 UK", flag: "🇬🇧" },
+  { code: "+1", country: "🇺🇸 SAD", flag: "🇺🇸" },
+];
+
+const formatPhoneNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, "");
+  if (digits.startsWith("0")) {
+    const parts = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 10)];
+    return parts.filter(Boolean).join(" ").trim();
+  } else {
+    const parts = [digits.slice(0, 2), digits.slice(2, 5), digits.slice(5, 9)];
+    return parts.filter(Boolean).join(" ").trim();
+  }
+};
+
+const getMaxDigits = (value: string): number => {
+  const digits = value.replace(/\D/g, "");
+  return digits.startsWith("0") ? 10 : 9;
+};
+
+const parseStoredPhone = (stored: string) => {
+  for (const c of countryCodes) {
+    if (stored.startsWith(c.code + " ")) {
+      return { countryCode: c.code, phone: stored.slice(c.code.length + 1) };
+    }
+  }
+  return { countryCode: "+381", phone: stored };
+};
+
 interface Ad {
   id: string;
   title: string;
