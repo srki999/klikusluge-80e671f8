@@ -213,6 +213,7 @@ export type Database = {
         Args: { p_application_id: string; p_notification_id: string }
         Returns: Json
       }
+      delete_expired_ads: { Args: never; Returns: undefined }
       reject_application: {
         Args: { p_application_id: string; p_notification_id: string }
         Returns: undefined
