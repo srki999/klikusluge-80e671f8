@@ -85,9 +85,12 @@ const DodajOglas = () => {
 
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [price, setPrice] = useState("");
+  const [currency, setCurrency] = useState("RSD");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
