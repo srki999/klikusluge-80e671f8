@@ -26,7 +26,12 @@ const Index = () => {
           }}
         >
           <img src={logo} alt="Klik Usluge" className="h-24 w-auto" />
-          <div className="h-10 w-10 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15" />
+          <button
+            onClick={() => navigate(user ? "/profile" : "/auth")}
+            className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 transition hover:bg-primary-foreground/25"
+          >
+            <UserCircle size={24} className="text-primary-foreground" />
+          </button>
         </header>
 
         {/* Body */}
