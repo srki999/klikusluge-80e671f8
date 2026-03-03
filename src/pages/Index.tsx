@@ -265,6 +265,28 @@ const Index = () => {
             </button>
           </form>
 
+          {/* Category filters */}
+          <div className="mx-auto mb-6 max-w-2xl">
+            <div className="flex items-center gap-2 mb-2 text-sm font-medium text-muted-foreground">
+              <Filter size={14} />
+              <span>Filtriraj po kategoriji:</span>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {CATEGORIES.map((cat) => (
+                <label
+                  key={cat}
+                  className="flex items-center gap-1.5 cursor-pointer text-sm text-foreground select-none"
+                >
+                  <Checkbox
+                    checked={selectedCategories.includes(cat)}
+                    onCheckedChange={() => toggleCategory(cat)}
+                  />
+                  {cat}
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* Ad cards */}
           <div className="space-y-4">
             {ads.map((ad) => (
