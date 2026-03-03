@@ -29,8 +29,40 @@ const categories = [
   "Online poslovi",
   "Selidba",
   "Botanika",
-  "Molerisanje",
+  "Krečenje",
   "Drugo",
+];
+
+const currencies = [
+  { code: "RSD", label: "🇷🇸 RSD" },
+  { code: "EUR", label: "🇪🇺 EUR" },
+  { code: "USD", label: "🇺🇸 USD" },
+  { code: "GBP", label: "🇬🇧 GBP" },
+  { code: "CHF", label: "🇨🇭 CHF" },
+  { code: "BAM", label: "🇧🇦 BAM" },
+];
+
+const serbianCities = [
+  "Beograd", "Novi Sad", "Niš", "Kragujevac", "Subotica", "Zrenjanin", "Pančevo",
+  "Čačak", "Novi Pazar", "Kraljevo", "Smederevo", "Leskovac", "Užice", "Vranje",
+  "Valjevo", "Šabac", "Sombor", "Požarevac", "Pirot", "Zaječar", "Kruševac",
+  "Kikinda", "Sremska Mitrovica", "Jagodina", "Vršac", "Bor", "Prokuplje",
+  "Loznica", "Prijepolje", "Aranđelovac", "Gornji Milanovac", "Paraćin",
+  "Trstenik", "Aleksinac", "Bečej", "Ruma", "Inđija", "Stara Pazova",
+  "Temerin", "Bačka Palanka", "Apatin", "Kula", "Senta", "Kanjiža",
+  "Ada", "Titel", "Srbobran", "Vrbas", "Bačka Topola", "Mali Iđoš",
+  "Kovačica", "Opovo", "Alibunar", "Plandište", "Bela Crkva",
+  "Knjaževac", "Negotin", "Kladovo", "Majdanpek", "Žagubica",
+  "Petrovac na Mlavi", "Kučevo", "Malo Crniće", "Veliko Gradište",
+  "Golubac", "Žabari", "Svilajnac", "Despotovac", "Ćuprija", "Rekovac",
+  "Batočina", "Knić", "Lapovo", "Topola", "Rača",
+  "Bajina Bašta", "Kosjerić", "Čajetina", "Arilje", "Ivanjica", "Lučani",
+  "Tutin", "Sjenica", "Raška", "Vrnjačka Banja", "Aleksandrovac", "Brus",
+  "Ćićevac", "Varvarin", "Blace", "Žitorađa", "Kuršumlija",
+  "Doljevac", "Gadžin Han", "Merošina", "Svrljig", "Sokobanja",
+  "Dimitrovgrad", "Babušnica", "Bela Palanka", "Vlasotince", "Lebane",
+  "Medveđa", "Bojnik", "Crna Trava", "Bosilegrad", "Surdulica",
+  "Vladičin Han", "Trgovište", "Bujanovac", "Preševo",
 ];
 
 const adSchema = z.object({
@@ -53,9 +85,12 @@ const DodajOglas = () => {
 
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [price, setPrice] = useState("");
+  const [currency, setCurrency] = useState("RSD");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
@@ -96,6 +131,7 @@ const DodajOglas = () => {
         start_date: format(parsed.data.startDate, "yyyy-MM-dd"),
         end_date: format(parsed.data.endDate, "yyyy-MM-dd"),
         price: parsed.data.price,
+        currency,
         description: parsed.data.description,
         status: "pending_payment",
       });
@@ -164,13 +200,49 @@ const DodajOglas = () => {
           </div>
 
           {/* Mesto */}
-          <div>
+          <div className="relative">
             <input
               placeholder="Mesto gde treba da se odradi posao"
               value={location}
-              onChange={e => { setLocation(e.target.value); setErrors(p => ({ ...p, location: "" })); }}
+              onChange={e => {
+                const val = e.target.value;
+                setLocation(val);
+                setErrors(p => ({ ...p, location: "" }));
+                if (val.trim().length >= 3) {
+                  const filtered = serbianCities.filter(c =>
+                    c.toLowerCase().startsWith(val.trim().toLowerCase())
+                  );
+                  setLocationSuggestions(filtered.slice(0, 6));
+                  setShowSuggestions(filtered.length > 0);
+                } else {
+                  setShowSuggestions(false);
+                }
+              }}
+              onFocus={() => {
+                if (location.trim().length >= 3 && locationSuggestions.length > 0) {
+                  setShowSuggestions(true);
+                }
+              }}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               className={inputClass}
             />
+            {showSuggestions && (
+              <div className="absolute left-0 top-full z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-popover shadow-lg">
+                {locationSuggestions.map(city => (
+                  <button
+                    key={city}
+                    type="button"
+                    onMouseDown={() => {
+                      setLocation(city);
+                      setShowSuggestions(false);
+                    }}
+                    className="flex w-full px-4 py-2.5 text-sm text-foreground transition hover:bg-muted"
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            )}
             {errors.location && <p className={errorClass}>{errors.location}</p>}
           </div>
 
@@ -236,18 +308,25 @@ const DodajOglas = () => {
 
           {/* Cena */}
           <div>
-            <div className="relative">
+            <div className="flex overflow-hidden rounded-xl border border-border bg-popover">
               <input
                 type="number"
                 placeholder="Unesite cifru za izvršavanje zadatka"
                 value={price}
                 onChange={e => { setPrice(e.target.value); setErrors(p => ({ ...p, price: "" })); }}
-                className={cn(inputClass, "pr-16")}
+                className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
                 min="0"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground">
-                RSD
-              </span>
+              <Select value={currency} onValueChange={setCurrency}>
+                <SelectTrigger className="w-24 shrink-0 border-0 border-l border-border rounded-none bg-transparent text-sm font-semibold">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencies.map(c => (
+                    <SelectItem key={c.code} value={c.code}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             {errors.price && <p className={errorClass}>{errors.price}</p>}
           </div>
