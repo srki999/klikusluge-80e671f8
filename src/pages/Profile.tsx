@@ -200,8 +200,22 @@ const Profile = () => {
           </DialogHeader>
           <div className="space-y-3 pt-2">
             <div>
+              <label className="mb-1 block text-sm font-medium text-foreground">Naslov</label>
+              <input maxLength={20} value={editForm.title} onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <p className="mt-1 text-xs text-muted-foreground">{editForm.title.length}/20</p>
+            </div>
+            <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Kategorija</label>
-              <input value={editForm.category} onChange={(e) => setEditForm((f) => ({ ...f, category: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <Select value={editForm.category} onValueChange={(v) => setEditForm((f) => ({ ...f, category: v }))}>
+                <SelectTrigger className="w-full rounded-xl border-border bg-popover py-2.5 text-sm">
+                  <SelectValue placeholder="Izaberite kategoriju" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Lokacija</label>
