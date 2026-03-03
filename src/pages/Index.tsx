@@ -307,9 +307,9 @@ const Index = () => {
           </DialogHeader>
           {selectedAd && (
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <FileText size={16} className="shrink-0" />
-                <p className="text-foreground">{selectedAd.description}</p>
+              <div className="flex gap-2 text-sm text-muted-foreground">
+                <FileText size={16} className="mt-0.5 shrink-0" />
+                <p className="text-foreground break-words whitespace-pre-wrap">{selectedAd.description}</p>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin size={16} className="shrink-0" />
