@@ -184,7 +184,11 @@ const Auth = () => {
 
           {!isLogin && (
             <div>
-              <input name="confirmPassword" type="password" placeholder="Potvrda lozinke" value={form.confirmPassword} onChange={handleChange} className={inputClass} />
+            <div className="relative">
+              <input name="confirmPassword" type={showConfirmPassword ? "text" : "password"} placeholder="Potvrda lozinke" value={form.confirmPassword} onChange={handleChange} className={inputClass} />
+              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition">
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
               {errors.confirmPassword && <p className={errorClass}>{errors.confirmPassword}</p>}
             </div>
           )}
