@@ -173,17 +173,21 @@ const Index = () => {
         {/* Main content */}
         <main className="min-h-[calc(100vh-104px)] flex-1 bg-muted p-6 md:p-8">
           {/* Search bar */}
-          <div className="mx-auto mb-8 flex max-w-2xl overflow-hidden rounded-xl border border-border bg-popover shadow-sm">
+          <form
+            onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
+            className="mx-auto mb-8 flex max-w-2xl overflow-hidden rounded-xl border border-border bg-popover shadow-sm"
+          >
             <input
               type="text"
-              placeholder="Pretraži..."
+              placeholder="Pretraži po kategoriji, mestu ili opisu..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
-              readOnly
             />
-            <button className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
+            <button type="submit" className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
               <Search size={18} />
             </button>
-          </div>
+          </form>
 
           {/* Ad cards */}
           <div className="space-y-4">
