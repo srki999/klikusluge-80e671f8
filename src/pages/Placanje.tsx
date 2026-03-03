@@ -1,9 +1,18 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, CreditCard, Loader2, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
+
+const AD_BASE_PRICE = 500; // RSD
+
+const discountMap: Record<string, number> = {
+  bronza: 10,
+  srebro: 15,
+  zlato: 20,
+  platina: 25,
+};
 
 const Placanje = () => {
   const navigate = useNavigate();
@@ -14,6 +23,20 @@ const Placanje = () => {
   const [form, setForm] = useState({ name: "", card: "", expiry: "", cvv: "" });
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  const [subPlan, setSubPlan] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      supabase.from("subscriptions").select("plan_name").eq("user_id", user.id).eq("status", "active").order("created_at", { ascending: false }).limit(1).single()
+        .then(({ data }) => {
+          if (data) {
+            setSubPlan(data.plan_name);
+            setDiscount(discountMap[data.plan_name] || 0);
+          }
+        });
+    }
+  }, [user]);
 
   if (!ad) {
     navigate("/");
@@ -24,6 +47,8 @@ const Placanje = () => {
     navigate("/auth");
     return null;
   }
+
+  const discountedPrice = Math.round(AD_BASE_PRICE * (1 - discount / 100));
 
   const handleChange = (field: string, value: string) => {
     if (field === "card") {
@@ -83,9 +108,17 @@ const Placanje = () => {
 
             <div className="mb-6 rounded-xl border border-border bg-muted/50 p-4 text-center">
               <p className="text-lg font-bold text-foreground">{ad.category}</p>
-              <p className="text-2xl font-extrabold text-foreground">
-                {ad.price} {ad.currency}
-              </p>
+              {discount > 0 ? (
+                <>
+                  <p className="text-sm text-muted-foreground line-through">{AD_BASE_PRICE} RSD</p>
+                  <p className="text-2xl font-extrabold text-foreground">{discountedPrice} RSD</p>
+                  <p className="mt-1 text-xs font-semibold text-green-600">
+                    Popust {discount}% ({subPlan?.toUpperCase()} pretplata)
+                  </p>
+                </>
+              ) : (
+                <p className="text-2xl font-extrabold text-foreground">{AD_BASE_PRICE} RSD</p>
+              )}
               <p className="mt-1 text-xs text-muted-foreground">{ad.location}</p>
             </div>
 
@@ -143,7 +176,7 @@ const Placanje = () => {
                 ) : (
                   <>
                     <CreditCard size={18} />
-                    Potvrdi uplatu
+                    Potvrdi uplatu – {discountedPrice} RSD
                   </>
                 )}
               </button>
