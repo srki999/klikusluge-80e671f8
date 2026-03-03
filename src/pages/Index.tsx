@@ -30,6 +30,7 @@ const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [userSub, setUserSub] = useState<{ plan_name: string; end_date: string } | null>(null);
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -50,8 +51,11 @@ const Index = () => {
         .then(({ data }) => {
           if (data) setUserName(`${data.ime} ${data.prezime}`.trim());
         });
+      supabase.from("subscriptions").select("plan_name, end_date").eq("user_id", user.id).eq("status", "active").order("created_at", { ascending: false }).limit(1).single()
+        .then(({ data }) => { if (data) setUserSub(data); else setUserSub(null); });
     } else {
       setUserName("");
+      setUserSub(null);
     }
   }, [user]);
 
@@ -186,16 +190,24 @@ const Index = () => {
         >
           <button
             onClick={() => navigate(user ? "/dodaj-oglas" : "/auth")}
-            className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:-translate-y-[2px] hover:bg-secondary-foreground/10"
+            className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-base font-semibold text-secondary-foreground shadow-md transition hover:-translate-y-[2px] hover:bg-secondary-foreground/10"
           >
             DODAJ OGLAS
           </button>
           <button
             onClick={() => navigate(user ? "/pretplata" : "/auth")}
-            className="mt-3 w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:-translate-y-[2px] hover:bg-secondary-foreground/10"
+            className="mt-3 w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-base font-semibold text-secondary-foreground shadow-md transition hover:-translate-y-[2px] hover:bg-secondary-foreground/10"
           >
             MODEL PRETPLATE
           </button>
+          {userSub && (
+            <div className="mt-3 rounded-xl border border-secondary-foreground/20 bg-secondary-foreground/10 px-4 py-3 text-center">
+              <p className="text-xs font-bold uppercase text-secondary-foreground tracking-wider">{userSub.plan_name}</p>
+              <p className="mt-0.5 text-[11px] text-secondary-foreground/80">
+                do {new Date(userSub.end_date).toLocaleDateString("sr-Latn-RS")}
+              </p>
+            </div>
+          )}
         </aside>
 
         {/* Main content */}
