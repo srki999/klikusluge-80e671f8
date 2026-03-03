@@ -129,6 +129,7 @@ const DodajOglas = () => {
     try {
       const { data: adData, error } = await supabase.from("ads").insert({
         user_id: user!.id,
+        title: parsed.data.title,
         category: parsed.data.category,
         location: parsed.data.location,
         start_date: format(parsed.data.startDate, "yyyy-MM-dd"),
