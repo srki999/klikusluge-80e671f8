@@ -101,6 +101,7 @@ const DodajOglas = () => {
   const [price, setPrice] = useState("");
   const [currency, setCurrency] = useState("RSD");
   const [description, setDescription] = useState("");
+  const [prominenceLevel, setProminenceLevel] = useState(1);
 
   useEffect(() => {
     if (!authLoading && !user) {
