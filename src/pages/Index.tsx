@@ -1,4 +1,5 @@
-import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText } from "lucide-react";
+import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText, Filter } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,6 +43,7 @@ const Index = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
   const [adOwner, setAdOwner] = useState<{ ime: string; prezime: string; telefon: string } | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -87,7 +89,10 @@ const Index = () => {
 
     const term = searchRef.current.trim();
     if (term) {
-      query = query.or(`category.ilike.%${term}%,location.ilike.%${term}%,description.ilike.%${term}%`);
+      query = query.or(`title.ilike.%${term}%,category.ilike.%${term}%,location.ilike.%${term}%,description.ilike.%${term}%`);
+    }
+    if (selectedCategories.length > 0) {
+      query = query.in("category", selectedCategories);
     }
 
     const { data, error } = await query;
@@ -104,7 +109,15 @@ const Index = () => {
     }
     setLoading(false);
     setInitialLoad(false);
-  }, [loading, hasMore]);
+  }, [loading, hasMore, selectedCategories]);
+
+  const CATEGORIES = ["Popravka", "Čišćenje", "Nabavka", "Online poslovi", "Selidba", "Botanika", "Krečenje", "Drugo"];
+
+  const toggleCategory = (cat: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
 
   // Search handler
   const handleSearch = useCallback(() => {
@@ -115,6 +128,16 @@ const Index = () => {
     setInitialLoad(true);
     fetchAds(true);
   }, [searchTerm, fetchAds]);
+
+  // Re-fetch when categories change
+  useEffect(() => {
+    offsetRef.current = 0;
+    setHasMore(true);
+    setAds([]);
+    setInitialLoad(true);
+    fetchAds(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategories]);
 
   // Initial fetch
   useEffect(() => {
@@ -242,6 +265,28 @@ const Index = () => {
             </button>
           </form>
 
+          {/* Category filters */}
+          <div className="mx-auto mb-6 max-w-2xl">
+            <div className="flex items-center gap-2 mb-2 text-sm font-medium text-muted-foreground">
+              <Filter size={14} />
+              <span>Filtriraj po kategoriji:</span>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {CATEGORIES.map((cat) => (
+                <label
+                  key={cat}
+                  className="flex items-center gap-1.5 cursor-pointer text-sm text-foreground select-none"
+                >
+                  <Checkbox
+                    checked={selectedCategories.includes(cat)}
+                    onCheckedChange={() => toggleCategory(cat)}
+                  />
+                  {cat}
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* Ad cards */}
           <div className="space-y-4">
             {ads.map((ad) => (
@@ -286,8 +331,8 @@ const Index = () => {
 
           {/* Empty state */}
           {!initialLoad && ads.length === 0 && !loading && (
-            <p className="py-16 text-center text-muted-foreground">
-              Trenutno nema dostupnih oglasa.
+            <p className="py-16 text-center text-2xl font-bold uppercase tracking-wide text-muted-foreground/60">
+              Nema oglasa koji odgovaraju vašoj pretrazi
             </p>
           )}
 
