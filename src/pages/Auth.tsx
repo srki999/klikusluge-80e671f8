@@ -190,8 +190,48 @@ const Auth = () => {
                   {errors.prezime && <p className={errorClass}>{errors.prezime}</p>}
                 </div>
               </div>
-              <div>
-                <input name="telefon" placeholder="Broj telefona" value={form.telefon} onChange={handleChange} className={inputClass} />
+              <div className="relative">
+                <div className="flex overflow-hidden rounded-xl border border-border bg-popover">
+                  <button
+                    type="button"
+                    onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                    className="flex shrink-0 items-center gap-1 border-r border-border px-3 py-3 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    {countryCodes.find(c => c.code === countryCode)?.flag} {countryCode}
+                    <svg className="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  <input
+                    name="telefon"
+                    placeholder="Broj telefona"
+                    value={form.telefon}
+                    onChange={e => {
+                      const raw = e.target.value.replace(/\D/g, "");
+                      const max = getMaxDigits(raw);
+                      if (raw.length <= max) {
+                        const formatted = formatPhoneNumber(raw);
+                        setForm(prev => ({ ...prev, telefon: formatted }));
+                        setErrors(prev => ({ ...prev, telefon: "" }));
+                      }
+                    }}
+                    className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                  />
+                </div>
+                {showCountryDropdown && (
+                  <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-border bg-popover shadow-lg">
+                    {countryCodes.map(c => (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => { setCountryCode(c.code); setShowCountryDropdown(false); }}
+                        className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition hover:bg-muted ${countryCode === c.code ? "bg-muted font-semibold" : ""}`}
+                      >
+                        <span>{c.flag}</span>
+                        <span className="text-foreground">{c.country}</span>
+                        <span className="ml-auto text-muted-foreground">{c.code}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {errors.telefon && <p className={errorClass}>{errors.telefon}</p>}
               </div>
               <div>
