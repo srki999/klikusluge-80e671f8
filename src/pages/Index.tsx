@@ -28,9 +28,11 @@ const Index = () => {
   const [hasMore, setHasMore] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const offsetRef = useRef(0);
+  const searchRef = useRef("");
 
   // Fetch user name
   useEffect(() => {
@@ -52,24 +54,49 @@ const Index = () => {
   }, []);
 
   // Fetch ads
-  const fetchAds = useCallback(async () => {
-    if (loading || !hasMore) return;
+  const fetchAds = useCallback(async (reset = false) => {
+    if (loading) return;
+    const currentOffset = reset ? 0 : offsetRef.current;
+    if (!reset && !hasMore) return;
     setLoading(true);
-    const { data, error } = await supabase
+
+    let query = supabase
       .from("ads")
       .select("id, category, location, price, currency, start_date, end_date, description, created_at")
       .eq("status", "active")
       .order("created_at", { ascending: false })
-      .range(offsetRef.current, offsetRef.current + PAGE_SIZE - 1);
+      .range(currentOffset, currentOffset + PAGE_SIZE - 1);
+
+    const term = searchRef.current.trim();
+    if (term) {
+      query = query.or(`category.ilike.%${term}%,location.ilike.%${term}%,description.ilike.%${term}%`);
+    }
+
+    const { data, error } = await query;
 
     if (!error && data) {
-      setAds((prev) => [...prev, ...data]);
-      offsetRef.current += data.length;
-      if (data.length < PAGE_SIZE) setHasMore(false);
+      if (reset) {
+        setAds(data);
+        offsetRef.current = data.length;
+      } else {
+        setAds((prev) => [...prev, ...data]);
+        offsetRef.current += data.length;
+      }
+      setHasMore(data.length >= PAGE_SIZE);
     }
     setLoading(false);
     setInitialLoad(false);
   }, [loading, hasMore]);
+
+  // Search handler
+  const handleSearch = useCallback(() => {
+    searchRef.current = searchTerm;
+    offsetRef.current = 0;
+    setHasMore(true);
+    setAds([]);
+    setInitialLoad(true);
+    fetchAds(true);
+  }, [searchTerm, fetchAds]);
 
   // Initial fetch
   useEffect(() => {
@@ -146,17 +173,21 @@ const Index = () => {
         {/* Main content */}
         <main className="min-h-[calc(100vh-104px)] flex-1 bg-muted p-6 md:p-8">
           {/* Search bar */}
-          <div className="mx-auto mb-8 flex max-w-2xl overflow-hidden rounded-xl border border-border bg-popover shadow-sm">
+          <form
+            onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
+            className="mx-auto mb-8 flex max-w-2xl overflow-hidden rounded-xl border border-border bg-popover shadow-sm"
+          >
             <input
               type="text"
-              placeholder="Pretraži..."
+              placeholder="Pretraži po kategoriji, mestu ili opisu..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
-              readOnly
             />
-            <button className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
+            <button type="submit" className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
               <Search size={18} />
             </button>
-          </div>
+          </form>
 
           {/* Ad cards */}
           <div className="space-y-4">
