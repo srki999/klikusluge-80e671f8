@@ -104,7 +104,7 @@ const Index = () => {
 
     let query = supabase
       .from("ads")
-      .select("id, category, location, price, currency, start_date, end_date, description, created_at, user_id")
+      .select("id, title, category, location, price, currency, start_date, end_date, description, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .range(currentOffset, currentOffset + PAGE_SIZE - 1);
