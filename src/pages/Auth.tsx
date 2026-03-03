@@ -43,7 +43,11 @@ const registerSchema = z.object({
   ime: z.string().trim().min(1, "Ime je obavezno").max(50),
   prezime: z.string().trim().min(1, "Prezime je obavezno").max(50),
   email: z.string().trim().email("Nevažeća email adresa"),
-  telefon: z.string().trim().min(1, "Broj telefona je obavezan").max(20),
+  telefon: z.string().trim().min(1, "Broj telefona je obavezan").refine(val => {
+    const digits = val.replace(/\D/g, "");
+    const max = digits.startsWith("0") ? 10 : 9;
+    return digits.length === max;
+  }, "Broj telefona nema ispravan broj cifara"),
   iskustva: z.string().max(2000).optional(),
   password: z.string().min(6, "Lozinka mora imati najmanje 6 karaktera").regex(/[0-9]/, "Lozinka mora sadržati barem jedan broj").regex(/[^a-zA-Z0-9]/, "Lozinka mora sadržati barem jedan specijalan karakter"),
   confirmPassword: z.string(),
