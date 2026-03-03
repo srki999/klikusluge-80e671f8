@@ -109,7 +109,15 @@ const Index = () => {
     }
     setLoading(false);
     setInitialLoad(false);
-  }, [loading, hasMore]);
+  }, [loading, hasMore, selectedCategories]);
+
+  const CATEGORIES = ["Popravka", "Čišćenje", "Nabavka", "Online poslovi", "Selidba", "Botanika", "Krečenje", "Drugo"];
+
+  const toggleCategory = (cat: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
 
   // Search handler
   const handleSearch = useCallback(() => {
