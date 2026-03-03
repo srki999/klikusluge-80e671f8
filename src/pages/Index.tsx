@@ -337,10 +337,7 @@ const Index = () => {
             {ads.map((ad) => (
               <div
                 key={ad.id}
-                onClick={(e) => {
-                  if ((e.target as HTMLElement).closest('button')) return;
-                  openAdDetails(ad);
-                }}
+                onClick={() => openAdDetails(ad)}
                 className="group flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-card px-6 py-5 shadow-sm transition-all duration-200 hover:-translate-y-[3px] hover:shadow-md"
                 style={{
                   background: "linear-gradient(135deg, hsl(220 15% 96%), hsl(220 15% 93%))",
