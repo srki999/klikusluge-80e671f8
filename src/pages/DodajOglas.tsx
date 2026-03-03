@@ -42,6 +42,13 @@ const currencies = [
   { code: "BAM", label: "🇧🇦 BAM" },
 ];
 
+const prominenceLevels = [
+  { level: 1, label: "Nivo 1 – 400 RSD", price: 400 },
+  { level: 2, label: "Nivo 2 – 800 RSD", price: 800 },
+  { level: 3, label: "Nivo 3 – 1.200 RSD", price: 1200 },
+  { level: 4, label: "Nivo 4 – 1.600 RSD", price: 1600 },
+];
+
 const serbianCities = [
   "Beograd", "Novi Sad", "Niš", "Kragujevac", "Subotica", "Zrenjanin", "Pančevo",
   "Čačak", "Novi Pazar", "Kraljevo", "Smederevo", "Leskovac", "Užice", "Vranje",
@@ -94,6 +101,7 @@ const DodajOglas = () => {
   const [price, setPrice] = useState("");
   const [currency, setCurrency] = useState("RSD");
   const [description, setDescription] = useState("");
+  const [prominenceLevel, setProminenceLevel] = useState(1);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -138,6 +146,7 @@ const DodajOglas = () => {
         currency,
         description: parsed.data.description,
         status: "pending_payment",
+        prominence_level: prominenceLevel,
       }).select().single();
 
       if (error) {
@@ -348,6 +357,20 @@ const DodajOglas = () => {
               </Select>
             </div>
             {errors.price && <p className={errorClass}>{errors.price}</p>}
+          </div>
+
+          {/* Nivo istiskivanja */}
+          <div>
+            <Select value={String(prominenceLevel)} onValueChange={v => setProminenceLevel(Number(v))}>
+              <SelectTrigger className="w-full rounded-xl border-border bg-popover py-3 text-sm">
+                <SelectValue placeholder="Izaberite nivo istiskivanja" />
+              </SelectTrigger>
+              <SelectContent>
+                {prominenceLevels.map(p => (
+                  <SelectItem key={p.level} value={String(p.level)}>{p.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Opis */}

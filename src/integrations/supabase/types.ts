@@ -24,6 +24,7 @@ export type Database = {
           id: string
           location: string
           price: number
+          prominence_level: number
           start_date: string
           status: string
           title: string
@@ -38,6 +39,7 @@ export type Database = {
           id?: string
           location: string
           price: number
+          prominence_level?: number
           start_date: string
           status?: string
           title?: string
@@ -52,6 +54,7 @@ export type Database = {
           id?: string
           location?: string
           price?: number
+          prominence_level?: number
           start_date?: string
           status?: string
           title?: string
