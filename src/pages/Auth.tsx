@@ -13,7 +13,7 @@ const registerSchema = z.object({
   email: z.string().trim().email("Nevažeća email adresa"),
   telefon: z.string().trim().min(1, "Broj telefona je obavezan").max(20),
   iskustva: z.string().max(2000).optional(),
-  password: z.string().min(6, "Lozinka mora imati najmanje 6 karaktera"),
+  password: z.string().min(6, "Lozinka mora imati najmanje 6 karaktera").regex(/[0-9]/, "Lozinka mora sadržati barem jedan broj").regex(/[^a-zA-Z0-9]/, "Lozinka mora sadržati barem jedan specijalan karakter"),
   confirmPassword: z.string(),
 }).refine(d => d.password === d.confirmPassword, {
   message: "Lozinke se ne poklapaju",
