@@ -261,6 +261,56 @@ const Index = () => {
           <div ref={sentinelRef} className="h-4" />
         </main>
       </div>
+
+      {/* Scroll to top */}
+      {scrolled && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition hover:bg-primary/80"
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
+
+      {/* Ad detail dialog */}
+      <Dialog open={!!selectedAd} onOpenChange={(open) => !open && setSelectedAd(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl">{selectedAd?.category}</DialogTitle>
+          </DialogHeader>
+          {selectedAd && (
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <FileText size={16} className="shrink-0" />
+                <p className="text-foreground">{selectedAd.description}</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin size={16} className="shrink-0" />
+                <span>{selectedAd.location}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Banknote size={16} className="shrink-0" />
+                <span className="font-medium text-foreground">{selectedAd.price} {selectedAd.currency}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar size={16} className="shrink-0" />
+                <span>{formatDate(selectedAd.start_date)} – {formatDate(selectedAd.end_date)}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <User size={16} className="shrink-0" />
+                {adOwner ? (
+                  <span>{adOwner.ime} {adOwner.prezime}{adOwner.telefon ? ` • ${adOwner.telefon}` : ""}</span>
+                ) : (
+                  <span className="animate-pulse">Učitavanje...</span>
+                )}
+              </div>
+              <button className="mt-2 w-full rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                PRIJAVI SE
+              </button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
