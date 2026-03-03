@@ -9,6 +9,8 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import DodajOglas from "./pages/DodajOglas";
 import Placanje from "./pages/Placanje";
+import Pretplata from "./pages/Pretplata";
+import PlacanjePretplate from "./pages/PlacanjePretplate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
