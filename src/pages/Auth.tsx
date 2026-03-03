@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import logo from "@/assets/logo.png";
@@ -13,7 +13,7 @@ const registerSchema = z.object({
   email: z.string().trim().email("Nevažeća email adresa"),
   telefon: z.string().trim().min(1, "Broj telefona je obavezan").max(20),
   iskustva: z.string().max(2000).optional(),
-  password: z.string().min(6, "Lozinka mora imati najmanje 6 karaktera"),
+  password: z.string().min(6, "Lozinka mora imati najmanje 6 karaktera").regex(/[0-9]/, "Lozinka mora sadržati barem jedan broj").regex(/[^a-zA-Z0-9]/, "Lozinka mora sadržati barem jedan specijalan karakter"),
   confirmPassword: z.string(),
 }).refine(d => d.password === d.confirmPassword, {
   message: "Lozinke se ne poklapaju",
@@ -29,6 +29,8 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -172,14 +174,20 @@ const Auth = () => {
             {errors.email && <p className={errorClass}>{errors.email}</p>}
           </div>
 
-          <div>
-            <input name="password" type="password" placeholder="Lozinka" value={form.password} onChange={handleChange} className={inputClass} />
+          <div className="relative">
+            <input name="password" type={showPassword ? "text" : "password"} placeholder="Lozinka" value={form.password} onChange={handleChange} className={inputClass} />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition">
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
             {errors.password && <p className={errorClass}>{errors.password}</p>}
           </div>
 
           {!isLogin && (
-            <div>
-              <input name="confirmPassword" type="password" placeholder="Potvrda lozinke" value={form.confirmPassword} onChange={handleChange} className={inputClass} />
+            <div className="relative">
+              <input name="confirmPassword" type={showConfirmPassword ? "text" : "password"} placeholder="Potvrda lozinke" value={form.confirmPassword} onChange={handleChange} className={inputClass} />
+              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition">
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
               {errors.confirmPassword && <p className={errorClass}>{errors.confirmPassword}</p>}
             </div>
           )}
