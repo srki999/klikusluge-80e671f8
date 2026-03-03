@@ -90,8 +90,8 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) =
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
             />
-            {message.length > 0 && message.trim().length < 10 && (
-              <p className="mt-1 text-xs text-destructive">Poruka mora imati najmanje 10 karaktera</p>
+            {message.length > 0 && message.trim().length < 30 && (
+              <p className="mt-1 text-xs text-destructive">Poruka mora imati najmanje 30 karaktera</p>
             )}
           </div>
         </div>
