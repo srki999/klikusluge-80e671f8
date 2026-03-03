@@ -76,6 +76,22 @@ const Profile = () => {
     if (data) setMyAds(data);
   };
 
+  const handleProfileSave = async () => {
+    if (!user) return;
+    const { error } = await supabase.from("profiles").update({
+      ime: profileForm.ime.trim(),
+      prezime: profileForm.prezime.trim(),
+      telefon: profileForm.telefon.trim(),
+    }).eq("user_id", user.id);
+    if (error) {
+      toast.error("Greška pri čuvanju podataka");
+    } else {
+      toast.success("Podaci su sačuvani");
+      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: profileForm.telefon.trim() } : prev);
+      setEditingProfile(false);
+    }
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
