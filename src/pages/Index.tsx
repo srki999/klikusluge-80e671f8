@@ -1,6 +1,8 @@
 import { Search, UserCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const ads = [
@@ -13,6 +15,18 @@ const ads = [
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      supabase.from("profiles").select("ime, prezime").eq("user_id", user.id).single()
+        .then(({ data }) => {
+          if (data) setUserName(`${data.ime} ${data.prezime}`.trim());
+        });
+    } else {
+      setUserName("");
+    }
+  }, [user]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
