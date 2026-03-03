@@ -129,6 +129,16 @@ const Index = () => {
     fetchAds(true);
   }, [searchTerm, fetchAds]);
 
+  // Re-fetch when categories change
+  useEffect(() => {
+    offsetRef.current = 0;
+    setHasMore(true);
+    setAds([]);
+    setInitialLoad(true);
+    fetchAds(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategories]);
+
   // Initial fetch
   useEffect(() => {
     fetchAds();
