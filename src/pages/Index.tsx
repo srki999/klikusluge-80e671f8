@@ -132,6 +132,19 @@ const Index = () => {
     return date.toLocaleDateString("sr-Latn-RS", { day: "2-digit", month: "2-digit", year: "numeric" });
   };
 
+  const openAdDetails = async (ad: Ad) => {
+    setSelectedAd(ad);
+    setAdOwner(null);
+    const { data } = await supabase
+      .from("profiles")
+      .select("ime, prezime, telefon")
+      .eq("user_id", ad.user_id)
+      .single();
+    if (data) setAdOwner(data);
+  };
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <div className="min-h-screen bg-background">
       {/* Fixed Header */}
