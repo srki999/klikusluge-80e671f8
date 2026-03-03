@@ -132,7 +132,7 @@ const Auth = () => {
             data: {
               ime: form.ime,
               prezime: form.prezime,
-              telefon: form.telefon,
+              telefon: `${countryCode} ${form.telefon}`,
               iskustva: form.iskustva,
             },
           },
