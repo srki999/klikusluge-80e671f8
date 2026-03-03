@@ -188,6 +188,21 @@ const DodajOglas = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Naslov */}
+          <div>
+            <input
+              placeholder="Naslov oglasa (maks. 20 karaktera)"
+              value={title}
+              onChange={e => { if (e.target.value.length <= 20) { setTitle(e.target.value); setErrors(p => ({ ...p, title: "" })); } }}
+              className={inputClass}
+              maxLength={20}
+            />
+            <div className="flex justify-between mt-1">
+              {errors.title && <p className={errorClass}>{errors.title}</p>}
+              <span className="text-xs text-muted-foreground ml-auto">{title.length}/20</span>
+            </div>
+          </div>
+
           {/* Kategorija */}
           <div>
             <Select value={category} onValueChange={v => { setCategory(v); setErrors(p => ({ ...p, category: "" })); }}>

@@ -332,7 +332,7 @@ const Index = () => {
       <Dialog open={!!selectedAd} onOpenChange={(open) => !open && setSelectedAd(null)}>
         <DialogContent className="max-w-lg overflow-hidden">
           <DialogHeader>
-            <DialogTitle className="text-xl">{selectedAd?.category}</DialogTitle>
+            <DialogTitle className="text-xl">{selectedAd?.title || selectedAd?.category}</DialogTitle>
           </DialogHeader>
           {selectedAd && (
             <div className="space-y-4 pt-2 overflow-hidden">
