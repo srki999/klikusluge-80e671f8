@@ -7,11 +7,47 @@ import { toast } from "sonner";
 import { z } from "zod";
 import logo from "@/assets/logo.png";
 
+const countryCodes = [
+  { code: "+381", country: "🇷🇸 Srbija", flag: "🇷🇸" },
+  { code: "+382", country: "🇲🇪 Crna Gora", flag: "🇲🇪" },
+  { code: "+385", country: "🇭🇷 Hrvatska", flag: "🇭🇷" },
+  { code: "+387", country: "🇧🇦 BiH", flag: "🇧🇦" },
+  { code: "+389", country: "🇲🇰 S. Makedonija", flag: "🇲🇰" },
+  { code: "+386", country: "🇸🇮 Slovenija", flag: "🇸🇮" },
+  { code: "+43", country: "🇦🇹 Austrija", flag: "🇦🇹" },
+  { code: "+49", country: "🇩🇪 Nemačka", flag: "🇩🇪" },
+  { code: "+41", country: "🇨🇭 Švajcarska", flag: "🇨🇭" },
+  { code: "+44", country: "🇬🇧 UK", flag: "🇬🇧" },
+  { code: "+1", country: "🇺🇸 SAD", flag: "🇺🇸" },
+];
+
+const formatPhoneNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, "");
+  if (digits.startsWith("0")) {
+    // Format: 0XX XXX XXXX (10 digits)
+    const parts = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 10)];
+    return parts.filter(Boolean).join(" ").trim();
+  } else {
+    // Format: XX XXX XXXX (9 digits)
+    const parts = [digits.slice(0, 2), digits.slice(2, 5), digits.slice(5, 9)];
+    return parts.filter(Boolean).join(" ").trim();
+  }
+};
+
+const getMaxDigits = (value: string): number => {
+  const digits = value.replace(/\D/g, "");
+  return digits.startsWith("0") ? 10 : 9;
+};
+
 const registerSchema = z.object({
   ime: z.string().trim().min(1, "Ime je obavezno").max(50),
   prezime: z.string().trim().min(1, "Prezime je obavezno").max(50),
   email: z.string().trim().email("Nevažeća email adresa"),
-  telefon: z.string().trim().min(1, "Broj telefona je obavezan").max(20),
+  telefon: z.string().trim().min(1, "Broj telefona je obavezan").refine(val => {
+    const digits = val.replace(/\D/g, "");
+    const max = digits.startsWith("0") ? 10 : 9;
+    return digits.length === max;
+  }, "Broj telefona nema ispravan broj cifara"),
   iskustva: z.string().max(2000).optional(),
   password: z.string().min(6, "Lozinka mora imati najmanje 6 karaktera").regex(/[0-9]/, "Lozinka mora sadržati barem jedan broj").regex(/[^a-zA-Z0-9]/, "Lozinka mora sadržati barem jedan specijalan karakter"),
   confirmPassword: z.string(),
@@ -31,6 +67,8 @@ const Auth = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [countryCode, setCountryCode] = useState("+381");
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -94,7 +132,7 @@ const Auth = () => {
             data: {
               ime: form.ime,
               prezime: form.prezime,
-              telefon: form.telefon,
+              telefon: `${countryCode} ${form.telefon}`,
               iskustva: form.iskustva,
             },
           },
@@ -152,8 +190,48 @@ const Auth = () => {
                   {errors.prezime && <p className={errorClass}>{errors.prezime}</p>}
                 </div>
               </div>
-              <div>
-                <input name="telefon" placeholder="Broj telefona" value={form.telefon} onChange={handleChange} className={inputClass} />
+              <div className="relative">
+                <div className="flex overflow-hidden rounded-xl border border-border bg-popover">
+                  <button
+                    type="button"
+                    onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                    className="flex shrink-0 items-center gap-1 border-r border-border px-3 py-3 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    {countryCodes.find(c => c.code === countryCode)?.flag} {countryCode}
+                    <svg className="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  <input
+                    name="telefon"
+                    placeholder="Broj telefona"
+                    value={form.telefon}
+                    onChange={e => {
+                      const raw = e.target.value.replace(/\D/g, "");
+                      const max = getMaxDigits(raw);
+                      if (raw.length <= max) {
+                        const formatted = formatPhoneNumber(raw);
+                        setForm(prev => ({ ...prev, telefon: formatted }));
+                        setErrors(prev => ({ ...prev, telefon: "" }));
+                      }
+                    }}
+                    className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                  />
+                </div>
+                {showCountryDropdown && (
+                  <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-border bg-popover shadow-lg">
+                    {countryCodes.map(c => (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => { setCountryCode(c.code); setShowCountryDropdown(false); }}
+                        className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition hover:bg-muted ${countryCode === c.code ? "bg-muted font-semibold" : ""}`}
+                      >
+                        <span>{c.flag}</span>
+                        <span className="text-foreground">{c.country}</span>
+                        <span className="ml-auto text-muted-foreground">{c.code}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {errors.telefon && <p className={errorClass}>{errors.telefon}</p>}
               </div>
               <div>
