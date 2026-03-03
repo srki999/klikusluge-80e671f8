@@ -26,7 +26,7 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) =
   const [submitting, setSubmitting] = useState(false);
 
   const priceNum = Number(price);
-  const valid = priceNum > 0 && message.trim().length >= 10;
+  const valid = priceNum > 0 && message.trim().length >= 30;
 
   const handleSubmit = async () => {
     if (!valid || submitting) return;
@@ -66,7 +66,7 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) =
         <div className="space-y-4 pt-2">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Ponuda cena (RSD) <span className="text-destructive">*</span>
+              Ponuda cene (RSD) <span className="text-destructive">*</span>
             </label>
             <Input
               type="number"
@@ -90,8 +90,8 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) =
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
             />
-            {message.length > 0 && message.trim().length < 10 && (
-              <p className="mt-1 text-xs text-destructive">Poruka mora imati najmanje 10 karaktera</p>
+            {message.length > 0 && message.trim().length < 30 && (
+              <p className="mt-1 text-xs text-destructive">Poruka mora imati najmanje 30 karaktera</p>
             )}
           </div>
         </div>
