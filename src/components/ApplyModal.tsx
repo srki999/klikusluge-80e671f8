@@ -19,15 +19,16 @@ interface ApplyModalProps {
   userId: string;
   adTitle: string;
   currency?: string;
+  maxPrice: number;
 }
 
-const ApplyModal = ({ open, onClose, adId, userId, adTitle, currency = "RSD" }: ApplyModalProps) => {
+const ApplyModal = ({ open, onClose, adId, userId, adTitle, currency = "RSD", maxPrice }: ApplyModalProps) => {
   const [price, setPrice] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const priceNum = Number(price);
-  const valid = priceNum > 0 && message.trim().length >= 30;
+  const valid = priceNum > 0 && priceNum <= maxPrice && message.trim().length >= 30;
 
   const handleSubmit = async () => {
     if (!valid || submitting) return;
@@ -78,6 +79,9 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle, currency = "RSD" }: 
             />
             {price && priceNum <= 0 && (
               <p className="mt-1 text-xs text-destructive">Cena mora biti veća od 0</p>
+            )}
+            {price && priceNum > maxPrice && (
+              <p className="mt-1 text-xs text-destructive">Ponuda ne može biti veća od {maxPrice} {currency}</p>
             )}
           </div>
 

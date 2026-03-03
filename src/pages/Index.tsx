@@ -458,6 +458,7 @@ const Index = () => {
           userId={user.id}
           adTitle={applyAd.title || applyAd.category}
           currency={applyAd.currency}
+          maxPrice={applyAd.price}
         />
       )}
     </div>
