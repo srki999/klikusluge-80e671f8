@@ -174,8 +174,11 @@ const Auth = () => {
             {errors.email && <p className={errorClass}>{errors.email}</p>}
           </div>
 
-          <div>
-            <input name="password" type="password" placeholder="Lozinka" value={form.password} onChange={handleChange} className={inputClass} />
+          <div className="relative">
+            <input name="password" type={showPassword ? "text" : "password"} placeholder="Lozinka" value={form.password} onChange={handleChange} className={inputClass} />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition">
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
             {errors.password && <p className={errorClass}>{errors.password}</p>}
           </div>
 
