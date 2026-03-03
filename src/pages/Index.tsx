@@ -1,4 +1,5 @@
-import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText } from "lucide-react";
+import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText, Filter } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
