@@ -55,7 +55,9 @@ const Placanje = () => {
     return null;
   }
 
-  const discountedPrice = Math.round(AD_BASE_PRICE * (1 - discount / 100));
+  const prominencePrice = prominencePriceMap[ad.prominence_level || 1] || 400;
+  const totalBase = AD_BASE_PRICE + prominencePrice;
+  const discountedPrice = Math.round(totalBase * (1 - discount / 100));
 
   const handleChange = (field: string, value: string) => {
     if (field === "card") {
