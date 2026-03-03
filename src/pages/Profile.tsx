@@ -92,6 +92,8 @@ const Profile = () => {
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
+  const [profileCountryCode, setProfileCountryCode] = useState("+381");
+  const [showProfileCountryDropdown, setShowProfileCountryDropdown] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
