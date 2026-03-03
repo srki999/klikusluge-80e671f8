@@ -440,6 +440,10 @@ const Index = () => {
                   PRIJAVI SE
                 </button>
               )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Apply modal */}
       {applyAd && user && (
@@ -451,10 +455,6 @@ const Index = () => {
           adTitle={applyAd.title || applyAd.category}
         />
       )}
-    </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
