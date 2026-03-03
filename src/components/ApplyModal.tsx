@@ -26,7 +26,7 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) =
   const [submitting, setSubmitting] = useState(false);
 
   const priceNum = Number(price);
-  const valid = priceNum > 0 && message.trim().length >= 10;
+  const valid = priceNum > 0 && message.trim().length >= 30;
 
   const handleSubmit = async () => {
     if (!valid || submitting) return;
