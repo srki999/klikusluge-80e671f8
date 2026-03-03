@@ -51,6 +51,9 @@ const Profile = () => {
   const [editAd, setEditAd] = useState<Ad | null>(null);
   const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "" });
 
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
+
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
