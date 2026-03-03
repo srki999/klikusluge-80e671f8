@@ -200,13 +200,49 @@ const DodajOglas = () => {
           </div>
 
           {/* Mesto */}
-          <div>
+          <div className="relative">
             <input
               placeholder="Mesto gde treba da se odradi posao"
               value={location}
-              onChange={e => { setLocation(e.target.value); setErrors(p => ({ ...p, location: "" })); }}
+              onChange={e => {
+                const val = e.target.value;
+                setLocation(val);
+                setErrors(p => ({ ...p, location: "" }));
+                if (val.trim().length >= 3) {
+                  const filtered = serbianCities.filter(c =>
+                    c.toLowerCase().startsWith(val.trim().toLowerCase())
+                  );
+                  setLocationSuggestions(filtered.slice(0, 6));
+                  setShowSuggestions(filtered.length > 0);
+                } else {
+                  setShowSuggestions(false);
+                }
+              }}
+              onFocus={() => {
+                if (location.trim().length >= 3 && locationSuggestions.length > 0) {
+                  setShowSuggestions(true);
+                }
+              }}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               className={inputClass}
             />
+            {showSuggestions && (
+              <div className="absolute left-0 top-full z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-popover shadow-lg">
+                {locationSuggestions.map(city => (
+                  <button
+                    key={city}
+                    type="button"
+                    onMouseDown={() => {
+                      setLocation(city);
+                      setShowSuggestions(false);
+                    }}
+                    className="flex w-full px-4 py-2.5 text-sm text-foreground transition hover:bg-muted"
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            )}
             {errors.location && <p className={errorClass}>{errors.location}</p>}
           </div>
 
