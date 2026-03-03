@@ -28,6 +28,8 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/dodaj-oglas" element={<DodajOglas />} />
             <Route path="/placanje" element={<Placanje />} />
+            <Route path="/pretplata" element={<Pretplata />} />
+            <Route path="/placanje-pretplate" element={<PlacanjePretplate />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

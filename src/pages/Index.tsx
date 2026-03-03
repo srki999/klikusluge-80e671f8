@@ -186,9 +186,15 @@ const Index = () => {
         >
           <button
             onClick={() => navigate(user ? "/dodaj-oglas" : "/auth")}
-            className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:bg-secondary-foreground/10"
+            className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:-translate-y-[2px] hover:bg-secondary-foreground/10"
           >
             DODAJ OGLAS
+          </button>
+          <button
+            onClick={() => navigate(user ? "/pretplata" : "/auth")}
+            className="mt-3 w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:-translate-y-[2px] hover:bg-secondary-foreground/10"
+          >
+            MODEL PRETPLATE
           </button>
         </aside>
 
