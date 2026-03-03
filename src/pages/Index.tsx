@@ -50,8 +50,11 @@ const Index = () => {
         .then(({ data }) => {
           if (data) setUserName(`${data.ime} ${data.prezime}`.trim());
         });
+      supabase.from("subscriptions").select("plan_name, end_date").eq("user_id", user.id).eq("status", "active").order("created_at", { ascending: false }).limit(1).single()
+        .then(({ data }) => { if (data) setUserSub(data); else setUserSub(null); });
     } else {
       setUserName("");
+      setUserSub(null);
     }
   }, [user]);
 
