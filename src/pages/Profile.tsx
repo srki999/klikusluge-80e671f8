@@ -30,6 +30,45 @@ const categories = [
   "Drugo",
 ];
 
+const countryCodes = [
+  { code: "+381", country: "🇷🇸 Srbija", flag: "🇷🇸" },
+  { code: "+382", country: "🇲🇪 Crna Gora", flag: "🇲🇪" },
+  { code: "+385", country: "🇭🇷 Hrvatska", flag: "🇭🇷" },
+  { code: "+387", country: "🇧🇦 BiH", flag: "🇧🇦" },
+  { code: "+389", country: "🇲🇰 S. Makedonija", flag: "🇲🇰" },
+  { code: "+386", country: "🇸🇮 Slovenija", flag: "🇸🇮" },
+  { code: "+43", country: "🇦🇹 Austrija", flag: "🇦🇹" },
+  { code: "+49", country: "🇩🇪 Nemačka", flag: "🇩🇪" },
+  { code: "+41", country: "🇨🇭 Švajcarska", flag: "🇨🇭" },
+  { code: "+44", country: "🇬🇧 UK", flag: "🇬🇧" },
+  { code: "+1", country: "🇺🇸 SAD", flag: "🇺🇸" },
+];
+
+const formatPhoneNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, "");
+  if (digits.startsWith("0")) {
+    const parts = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 10)];
+    return parts.filter(Boolean).join(" ").trim();
+  } else {
+    const parts = [digits.slice(0, 2), digits.slice(2, 5), digits.slice(5, 9)];
+    return parts.filter(Boolean).join(" ").trim();
+  }
+};
+
+const getMaxDigits = (value: string): number => {
+  const digits = value.replace(/\D/g, "");
+  return digits.startsWith("0") ? 10 : 9;
+};
+
+const parseStoredPhone = (stored: string) => {
+  for (const c of countryCodes) {
+    if (stored.startsWith(c.code + " ")) {
+      return { countryCode: c.code, phone: stored.slice(c.code.length + 1) };
+    }
+  }
+  return { countryCode: "+381", phone: stored };
+};
+
 interface Ad {
   id: string;
   title: string;
@@ -53,6 +92,8 @@ const Profile = () => {
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
+  const [profileCountryCode, setProfileCountryCode] = useState("+381");
+  const [showProfileCountryDropdown, setShowProfileCountryDropdown] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -78,16 +119,17 @@ const Profile = () => {
 
   const handleProfileSave = async () => {
     if (!user) return;
+    const fullPhone = `${profileCountryCode} ${profileForm.telefon.trim()}`;
     const { error } = await supabase.from("profiles").update({
       ime: profileForm.ime.trim(),
       prezime: profileForm.prezime.trim(),
-      telefon: profileForm.telefon.trim(),
+      telefon: fullPhone,
     }).eq("user_id", user.id);
     if (error) {
       toast.error("Greška pri čuvanju podataka");
     } else {
       toast.success("Podaci su sačuvani");
-      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: profileForm.telefon.trim() } : prev);
+      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: fullPhone } : prev);
       setEditingProfile(false);
     }
   };
@@ -163,9 +205,46 @@ const Profile = () => {
                 <input value={profileForm.prezime} onChange={(e) => setProfileForm((f) => ({ ...f, prezime: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
               </div>
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
-              <div>
+              <div className="relative">
                 <label className="mb-1 block font-semibold">Telefon</label>
-                <input value={profileForm.telefon} onChange={(e) => setProfileForm((f) => ({ ...f, telefon: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
+                <div className="flex overflow-hidden rounded-xl border border-border bg-popover">
+                  <button
+                    type="button"
+                    onClick={() => setShowProfileCountryDropdown(!showProfileCountryDropdown)}
+                    className="flex shrink-0 items-center gap-1 border-r border-border px-3 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    {countryCodes.find(c => c.code === profileCountryCode)?.flag} {profileCountryCode}
+                    <svg className="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  <input
+                    value={profileForm.telefon}
+                    placeholder="Broj telefona"
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, "");
+                      const max = getMaxDigits(raw);
+                      if (raw.length <= max) {
+                        setProfileForm((f) => ({ ...f, telefon: formatPhoneNumber(raw) }));
+                      }
+                    }}
+                    className="flex-1 px-4 py-2.5 text-sm outline-none bg-transparent"
+                  />
+                </div>
+                {showProfileCountryDropdown && (
+                  <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-border bg-popover shadow-lg">
+                    {countryCodes.map(c => (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => { setProfileCountryCode(c.code); setShowProfileCountryDropdown(false); }}
+                        className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition hover:bg-muted ${profileCountryCode === c.code ? "bg-muted font-semibold" : ""}`}
+                      >
+                        <span>{c.flag}</span>
+                        <span className="text-foreground">{c.country}</span>
+                        <span className="ml-auto text-muted-foreground">{c.code}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
               <div className="flex gap-2">
@@ -184,7 +263,7 @@ const Profile = () => {
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Telefon:</span> {profile.telefon}</div>
               {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
-              <button onClick={() => { setProfileForm({ ime: profile.ime, prezime: profile.prezime, telefon: profile.telefon }); setEditingProfile(true); }} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
+              <button onClick={() => { const parsed = parseStoredPhone(profile.telefon); setProfileForm({ ime: profile.ime, prezime: profile.prezime, telefon: parsed.phone }); setProfileCountryCode(parsed.countryCode); setEditingProfile(true); }} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
                 <Pencil size={16} /> Izmeni podatke
               </button>
             </div>
