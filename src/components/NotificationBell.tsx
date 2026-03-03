@@ -83,6 +83,19 @@ const NotificationBell = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
   };
 
+  const handleDeleteNotification = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    await supabase.from("notifications").delete().eq("id", id);
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handleDeleteAll = async () => {
+    if (!user || notifications.length === 0) return;
+    const ids = notifications.map((n) => n.id);
+    await supabase.from("notifications").delete().in("id", ids);
+    setNotifications([]);
+  };
+
   const handleOpen = (isOpen: boolean) => {
     setOpen(isOpen);
     if (isOpen && unreadCount > 0) {
