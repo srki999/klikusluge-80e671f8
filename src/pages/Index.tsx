@@ -184,10 +184,10 @@ const Index = () => {
       <div className="h-[104px]" />
 
       {/* Body */}
-      <div className="mx-auto flex w-full max-w-[1300px]">
+      <div className="flex w-full">
         {/* Sidebar */}
         <aside
-          className="sticky top-[104px] hidden h-[calc(100vh-104px)] w-64 shrink-0 p-5 md:block"
+          className="sticky top-[104px] hidden h-[calc(100vh-104px)] w-64 shrink-0 p-5 md:block ml-0"
           style={{
             background: "linear-gradient(180deg, hsl(30 100% 50%), hsl(30 95% 60%))",
           }}
@@ -301,15 +301,15 @@ const Index = () => {
 
       {/* Ad detail dialog */}
       <Dialog open={!!selectedAd} onOpenChange={(open) => !open && setSelectedAd(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-xl">{selectedAd?.category}</DialogTitle>
           </DialogHeader>
           {selectedAd && (
-            <div className="space-y-4 pt-2">
-              <div className="flex gap-2 text-sm text-muted-foreground">
+            <div className="space-y-4 pt-2 overflow-hidden">
+              <div className="flex gap-2 text-sm text-muted-foreground min-w-0">
                 <FileText size={16} className="mt-0.5 shrink-0" />
-                <p className="text-foreground break-words whitespace-pre-wrap">{selectedAd.description}</p>
+                <p className="text-foreground break-words whitespace-pre-wrap overflow-wrap-anywhere min-w-0" style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}>{selectedAd.description}</p>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin size={16} className="shrink-0" />
