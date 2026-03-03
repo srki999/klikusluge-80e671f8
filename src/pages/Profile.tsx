@@ -11,6 +11,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const categories = [
+  "Popravka",
+  "Čišćenje",
+  "Nabavka",
+  "Online poslovi",
+  "Selidba",
+  "Botanika",
+  "Krečenje",
+  "Drugo",
+];
 
 interface Ad {
   id: string;
@@ -31,7 +49,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<{ ime: string; prezime: string; telefon: string; iskustva: string } | null>(null);
   const [myAds, setMyAds] = useState<Ad[]>([]);
   const [editAd, setEditAd] = useState<Ad | null>(null);
-  const [editForm, setEditForm] = useState({ category: "", location: "", price: "", description: "" });
+  const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "" });
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -72,12 +90,13 @@ const Profile = () => {
 
   const openEdit = (ad: Ad) => {
     setEditAd(ad);
-    setEditForm({ category: ad.category, location: ad.location, price: String(ad.price), description: ad.description });
+    setEditForm({ title: ad.title, category: ad.category, location: ad.location, price: String(ad.price), description: ad.description });
   };
 
   const handleEditSave = async () => {
     if (!editAd) return;
     const { error } = await supabase.from("ads").update({
+      title: editForm.title,
       category: editForm.category,
       location: editForm.location,
       price: Number(editForm.price),
@@ -181,8 +200,22 @@ const Profile = () => {
           </DialogHeader>
           <div className="space-y-3 pt-2">
             <div>
+              <label className="mb-1 block text-sm font-medium text-foreground">Naslov</label>
+              <input maxLength={20} value={editForm.title} onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <p className="mt-1 text-xs text-muted-foreground">{editForm.title.length}/20</p>
+            </div>
+            <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Kategorija</label>
-              <input value={editForm.category} onChange={(e) => setEditForm((f) => ({ ...f, category: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <Select value={editForm.category} onValueChange={(v) => setEditForm((f) => ({ ...f, category: v }))}>
+                <SelectTrigger className="w-full rounded-xl border-border bg-popover py-2.5 text-sm">
+                  <SelectValue placeholder="Izaberite kategoriju" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Lokacija</label>
