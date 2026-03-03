@@ -49,7 +49,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<{ ime: string; prezime: string; telefon: string; iskustva: string } | null>(null);
   const [myAds, setMyAds] = useState<Ad[]>([]);
   const [editAd, setEditAd] = useState<Ad | null>(null);
-  const [editForm, setEditForm] = useState({ category: "", location: "", price: "", description: "" });
+  const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "" });
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
