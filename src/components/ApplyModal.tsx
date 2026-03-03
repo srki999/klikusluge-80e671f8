@@ -21,7 +21,7 @@ interface ApplyModalProps {
   currency?: string;
 }
 
-const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) => {
+const ApplyModal = ({ open, onClose, adId, userId, adTitle, currency = "RSD" }: ApplyModalProps) => {
   const [price, setPrice] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
