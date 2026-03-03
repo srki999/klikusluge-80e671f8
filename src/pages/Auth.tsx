@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import logo from "@/assets/logo.png";
 import { toast } from "sonner";
 import { z } from "zod";
+import { ArrowLeft } from "lucide-react";
 
 const registerSchema = z.object({
   ime: z.string().trim().min(1, "Ime je obavezno").max(50),
