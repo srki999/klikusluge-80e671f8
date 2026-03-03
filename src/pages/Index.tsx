@@ -41,6 +41,31 @@ const Index = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+interface Ad {
+  id: string;
+  title: string;
+  category: string;
+  location: string;
+  price: number;
+  currency: string;
+  start_date: string;
+  end_date: string;
+  description: string;
+  created_at: string;
+  user_id: string;
+}
+
+const Index = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+  const [userSub, setUserSub] = useState<{ plan_name: string; end_date: string } | null>(null);
+  const [ads, setAds] = useState<Ad[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
   const [adOwner, setAdOwner] = useState<{ ime: string; prezime: string; telefon: string } | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
