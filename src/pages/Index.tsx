@@ -58,10 +58,8 @@ const Index = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
   const [adOwner, setAdOwner] = useState<{ ime: string; prezime: string; telefon: string } | null>(null);
+  const [applyAd, setApplyAd] = useState<Ad | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const offsetRef = useRef(0);
-  const searchRef = useRef("");
 
   // Fetch user name
   useEffect(() => {
