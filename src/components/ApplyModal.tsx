@@ -18,9 +18,10 @@ interface ApplyModalProps {
   adId: string;
   userId: string;
   adTitle: string;
+  currency?: string;
 }
 
-const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) => {
+const ApplyModal = ({ open, onClose, adId, userId, adTitle, currency = "RSD" }: ApplyModalProps) => {
   const [price, setPrice] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -66,7 +67,7 @@ const ApplyModal = ({ open, onClose, adId, userId, adTitle }: ApplyModalProps) =
         <div className="space-y-4 pt-2">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Ponuda cene (RSD) <span className="text-destructive">*</span>
+              Ponuda cene ({currency}) <span className="text-destructive">*</span>
             </label>
             <Input
               type="number"
