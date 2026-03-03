@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
-import { LogOut, ArrowLeft, Pencil, Trash2, MapPin, Banknote, Calendar } from "lucide-react";
+import { LogOut, ArrowLeft, Pencil, Trash2, MapPin, Banknote, Calendar, Save } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
