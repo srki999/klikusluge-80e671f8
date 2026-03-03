@@ -55,7 +55,7 @@ const Placanje = () => {
     return null;
   }
 
-  const prominencePrice = prominencePriceMap[ad.prominence_level || 1] || 400;
+  const prominencePrice = prominencePriceMap[ad.prominence_level || 1] ?? 0;
   const totalBase = AD_BASE_PRICE + prominencePrice;
   const discountedPrice = Math.round(totalBase * (1 - discount / 100));
 
