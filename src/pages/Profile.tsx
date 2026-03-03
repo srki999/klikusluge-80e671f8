@@ -11,6 +11,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const categories = [
+  "Popravka",
+  "Čišćenje",
+  "Nabavka",
+  "Online poslovi",
+  "Selidba",
+  "Botanika",
+  "Krečenje",
+  "Drugo",
+];
 
 interface Ad {
   id: string;
