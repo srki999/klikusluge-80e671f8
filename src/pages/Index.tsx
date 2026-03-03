@@ -122,6 +122,7 @@ const Index = () => {
           const newAds = data.filter(a => !existingIds.has(a.id));
           return [...prev, ...newAds];
         });
+        offsetRef.current += data.length;
       }
       setHasMore(data.length >= PAGE_SIZE);
     }
