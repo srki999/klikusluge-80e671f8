@@ -268,9 +268,11 @@ const Index = () => {
                     </span>
                   </div>
                 </div>
-                <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
-                  PRIJAVI SE
-                </button>
+                {(!user || user.id !== ad.user_id) && (
+                  <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                    PRIJAVI SE
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -336,9 +338,11 @@ const Index = () => {
                   <span className="animate-pulse">Učitavanje...</span>
                 )}
               </div>
-              <button className="mt-2 w-full rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
-                PRIJAVI SE
-              </button>
+              {(!user || user.id !== selectedAd.user_id) && (
+                <button className="mt-2 w-full rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                  PRIJAVI SE
+                </button>
+              )}
             </div>
           )}
         </DialogContent>

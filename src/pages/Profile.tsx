@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
-import { LogOut, ArrowLeft, Pencil, Trash2, MapPin, Banknote, Calendar } from "lucide-react";
+import { LogOut, ArrowLeft, Pencil, Trash2, MapPin, Banknote, Calendar, Save } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -51,6 +51,9 @@ const Profile = () => {
   const [editAd, setEditAd] = useState<Ad | null>(null);
   const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "" });
 
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
+
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
@@ -71,6 +74,22 @@ const Profile = () => {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (data) setMyAds(data);
+  };
+
+  const handleProfileSave = async () => {
+    if (!user) return;
+    const { error } = await supabase.from("profiles").update({
+      ime: profileForm.ime.trim(),
+      prezime: profileForm.prezime.trim(),
+      telefon: profileForm.telefon.trim(),
+    }).eq("user_id", user.id);
+    if (error) {
+      toast.error("Greška pri čuvanju podataka");
+    } else {
+      toast.success("Podaci su sačuvani");
+      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: profileForm.telefon.trim() } : prev);
+      setEditingProfile(false);
+    }
   };
 
   const handleSignOut = async () => {
@@ -133,13 +152,43 @@ const Profile = () => {
             <img src={logo} alt="Klik Usluge" className="h-20 w-auto" />
           </div>
           <h1 className="mb-6 text-center text-2xl font-bold text-foreground">Moj profil</h1>
-          <div className="space-y-3 text-sm text-foreground">
-            <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Ime:</span> {profile.ime}</div>
-            <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Prezime:</span> {profile.prezime}</div>
-            <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
-            <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Telefon:</span> {profile.telefon}</div>
-            {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
-          </div>
+          {editingProfile ? (
+            <div className="space-y-3 text-sm text-foreground">
+              <div>
+                <label className="mb-1 block font-semibold">Ime</label>
+                <input value={profileForm.ime} onChange={(e) => setProfileForm((f) => ({ ...f, ime: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+              <div>
+                <label className="mb-1 block font-semibold">Prezime</label>
+                <input value={profileForm.prezime} onChange={(e) => setProfileForm((f) => ({ ...f, prezime: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+              <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
+              <div>
+                <label className="mb-1 block font-semibold">Telefon</label>
+                <input value={profileForm.telefon} onChange={(e) => setProfileForm((f) => ({ ...f, telefon: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+              {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
+              <div className="flex gap-2">
+                <button onClick={handleProfileSave} className="flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90" style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}>
+                  <Save size={16} /> Sačuvaj
+                </button>
+                <button onClick={() => setEditingProfile(false)} className="flex-1 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
+                  Otkaži
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3 text-sm text-foreground">
+              <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Ime:</span> {profile.ime}</div>
+              <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Prezime:</span> {profile.prezime}</div>
+              <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
+              <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Telefon:</span> {profile.telefon}</div>
+              {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
+              <button onClick={() => { setProfileForm({ ime: profile.ime, prezime: profile.prezime, telefon: profile.telefon }); setEditingProfile(true); }} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
+                <Pencil size={16} /> Izmeni podatke
+              </button>
+            </div>
+          )}
           <button onClick={handleSignOut} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90" style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}>
             <LogOut size={16} /> Odjavite se
           </button>
