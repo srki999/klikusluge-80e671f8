@@ -107,6 +107,7 @@ const DodajOglas = () => {
     setErrors({});
 
     const parsed = adSchema.safeParse({
+      title,
       category,
       location,
       startDate,
