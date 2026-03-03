@@ -56,13 +56,20 @@ const Placanje = () => {
     }
     if (field === "expiry") {
       value = value.replace(/\D/g, "").slice(0, 4);
+      if (value.length >= 2) {
+        const mm = parseInt(value.slice(0, 2), 10);
+        if (mm > 12) value = "12" + value.slice(2);
+        if (mm === 0 && value.slice(0, 2) === "00") value = "01" + value.slice(2);
+      }
       if (value.length > 2) value = value.slice(0, 2) + "/" + value.slice(2);
     }
     if (field === "cvv") value = value.replace(/\D/g, "").slice(0, 3);
     setForm((f) => ({ ...f, [field]: value }));
   };
 
-  const valid = form.name.trim().length > 1 && form.card.replace(/\s/g, "").length === 16 && form.expiry.length === 5 && form.cvv.length === 3;
+  const expiryParts = form.expiry.split("/");
+  const expiryValid = expiryParts.length === 2 && parseInt(expiryParts[0], 10) >= 1 && parseInt(expiryParts[0], 10) <= 12 && expiryParts[1]?.length === 2;
+  const valid = form.name.trim().length > 1 && form.card.replace(/\s/g, "").length === 16 && form.expiry.length === 5 && expiryValid && form.cvv.length === 3;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
