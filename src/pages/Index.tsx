@@ -4,6 +4,10 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
+import badgeBronza from "@/assets/badge-bronza.png";
+import badgeSrebro from "@/assets/badge-srebro.png";
+import badgeZlato from "@/assets/badge-zlato.png";
+import badgePlatina from "@/assets/badge-platina.png";
 import {
   Dialog,
   DialogContent,
@@ -201,7 +205,12 @@ const Index = () => {
             MODEL PRETPLATE
           </button>
           {userSub && (
-            <div className="mt-3 rounded-xl border border-secondary-foreground/20 bg-secondary-foreground/10 px-4 py-3 text-center">
+            <div className="mt-3 rounded-xl border border-secondary-foreground/20 bg-secondary-foreground/10 px-4 py-3 flex flex-col items-center">
+              <img
+                src={{ bronza: badgeBronza, srebro: badgeSrebro, zlato: badgeZlato, platina: badgePlatina }[userSub.plan_name] || badgeBronza}
+                alt={userSub.plan_name}
+                className="h-12 w-auto rounded-lg object-contain mb-1"
+              />
               <p className="text-xs font-bold uppercase text-secondary-foreground tracking-wider">{userSub.plan_name}</p>
               <p className="mt-0.5 text-[11px] text-secondary-foreground/80">
                 do {new Date(userSub.end_date).toLocaleDateString("sr-Latn-RS")}
@@ -298,9 +307,9 @@ const Index = () => {
           </DialogHeader>
           {selectedAd && (
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <FileText size={16} className="shrink-0" />
-                <p className="text-foreground">{selectedAd.description}</p>
+              <div className="flex gap-2 text-sm text-muted-foreground">
+                <FileText size={16} className="mt-0.5 shrink-0" />
+                <p className="text-foreground break-words whitespace-pre-wrap">{selectedAd.description}</p>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin size={16} className="shrink-0" />
