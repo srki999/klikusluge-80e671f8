@@ -205,9 +205,46 @@ const Profile = () => {
                 <input value={profileForm.prezime} onChange={(e) => setProfileForm((f) => ({ ...f, prezime: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
               </div>
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
-              <div>
+              <div className="relative">
                 <label className="mb-1 block font-semibold">Telefon</label>
-                <input value={profileForm.telefon} onChange={(e) => setProfileForm((f) => ({ ...f, telefon: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
+                <div className="flex overflow-hidden rounded-xl border border-border bg-popover">
+                  <button
+                    type="button"
+                    onClick={() => setShowProfileCountryDropdown(!showProfileCountryDropdown)}
+                    className="flex shrink-0 items-center gap-1 border-r border-border px-3 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    {countryCodes.find(c => c.code === profileCountryCode)?.flag} {profileCountryCode}
+                    <svg className="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  <input
+                    value={profileForm.telefon}
+                    placeholder="Broj telefona"
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, "");
+                      const max = getMaxDigits(raw);
+                      if (raw.length <= max) {
+                        setProfileForm((f) => ({ ...f, telefon: formatPhoneNumber(raw) }));
+                      }
+                    }}
+                    className="flex-1 px-4 py-2.5 text-sm outline-none bg-transparent"
+                  />
+                </div>
+                {showProfileCountryDropdown && (
+                  <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-border bg-popover shadow-lg">
+                    {countryCodes.map(c => (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => { setProfileCountryCode(c.code); setShowProfileCountryDropdown(false); }}
+                        className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition hover:bg-muted ${profileCountryCode === c.code ? "bg-muted font-semibold" : ""}`}
+                      >
+                        <span>{c.flag}</span>
+                        <span className="text-foreground">{c.country}</span>
+                        <span className="ml-auto text-muted-foreground">{c.code}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
               <div className="flex gap-2">
