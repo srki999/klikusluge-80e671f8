@@ -187,7 +187,7 @@ const Index = () => {
       <div className="flex w-full max-w-[1300px] mx-auto">
         {/* Sidebar */}
         <aside
-          className="sticky top-[104px] hidden h-[calc(100vh-104px)] w-64 shrink-0 p-5 md:block"
+          className="sticky top-[104px] hidden h-[calc(100vh-104px)] w-64 shrink-0 p-5 md:block ml-0"
           style={{
             background: "linear-gradient(180deg, hsl(30 100% 50%), hsl(30 95% 60%))",
           }}
