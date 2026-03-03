@@ -9,6 +9,8 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import DodajOglas from "./pages/DodajOglas";
 import Placanje from "./pages/Placanje";
+import Pretplata from "./pages/Pretplata";
+import PlacanjePretplate from "./pages/PlacanjePretplate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/dodaj-oglas" element={<DodajOglas />} />
             <Route path="/placanje" element={<Placanje />} />
+            <Route path="/pretplata" element={<Pretplata />} />
+            <Route path="/placanje-pretplate" element={<PlacanjePretplate />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
