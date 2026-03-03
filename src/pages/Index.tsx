@@ -279,8 +279,9 @@ const Index = () => {
               >
                 <div className="space-y-1">
                   <span className="text-lg font-semibold text-foreground tracking-wide">
-                    {ad.category}
+                    {ad.title || ad.category}
                   </span>
+                  <p className="text-xs text-muted-foreground">{ad.category}</p>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     <span>{ad.location}</span>
                     <span className="font-medium text-foreground">
