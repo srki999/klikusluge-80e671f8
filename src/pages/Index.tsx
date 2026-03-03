@@ -359,7 +359,14 @@ const Index = () => {
                   </div>
                 </div>
                 {(!user || user.id !== ad.user_id) && (
-                  <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!user) { navigate("/auth"); return; }
+                      setApplyAd(ad);
+                    }}
+                    className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80"
+                  >
                     PRIJAVI SE
                   </button>
                 )}
