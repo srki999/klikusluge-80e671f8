@@ -19,6 +19,7 @@ const PAGE_SIZE = 10;
 
 interface Ad {
   id: string;
+  title: string;
   category: string;
   location: string;
   price: number;
@@ -79,7 +80,7 @@ const Index = () => {
 
     let query = supabase
       .from("ads")
-      .select("id, category, location, price, currency, start_date, end_date, description, created_at, user_id")
+      .select("id, title, category, location, price, currency, start_date, end_date, description, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .range(currentOffset, currentOffset + PAGE_SIZE - 1);
@@ -169,6 +170,9 @@ const Index = () => {
           className="h-24 w-auto cursor-pointer"
           onClick={() => navigate("/")}
         />
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold uppercase tracking-widest text-primary-foreground select-none">
+          KLIK USLUGE
+        </h1>
         <button
           onClick={() => navigate(user ? "/profile" : "/auth")}
           className="flex items-center gap-2 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 px-3 py-2 transition hover:bg-primary-foreground/25"
@@ -251,8 +255,9 @@ const Index = () => {
               >
                 <div className="space-y-1">
                   <span className="text-lg font-semibold text-foreground tracking-wide">
-                    {ad.category}
+                    {ad.title || ad.category}
                   </span>
+                  <p className="text-xs text-muted-foreground">{ad.category}</p>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     <span>{ad.location}</span>
                     <span className="font-medium text-foreground">
@@ -303,7 +308,7 @@ const Index = () => {
       <Dialog open={!!selectedAd} onOpenChange={(open) => !open && setSelectedAd(null)}>
         <DialogContent className="max-w-lg overflow-hidden">
           <DialogHeader>
-            <DialogTitle className="text-xl">{selectedAd?.category}</DialogTitle>
+            <DialogTitle className="text-xl">{selectedAd?.title || selectedAd?.category}</DialogTitle>
           </DialogHeader>
           {selectedAd && (
             <div className="space-y-4 pt-2 overflow-hidden">

@@ -1,0 +1,1 @@
+ALTER TABLE public.ads ADD COLUMN title text NOT NULL DEFAULT '';

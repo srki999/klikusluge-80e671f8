@@ -66,6 +66,7 @@ const serbianCities = [
 ];
 
 const adSchema = z.object({
+  title: z.string().trim().min(1, "Naslov je obavezan").max(20, "Naslov može imati najviše 20 karaktera"),
   category: z.string().min(1, "Kategorija je obavezna"),
   location: z.string().trim().min(1, "Mesto je obavezno").max(100),
   startDate: z.date({ required_error: "Datum početka je obavezan" }),
@@ -83,6 +84,7 @@ const DodajOglas = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
@@ -105,6 +107,7 @@ const DodajOglas = () => {
     setErrors({});
 
     const parsed = adSchema.safeParse({
+      title,
       category,
       location,
       startDate,
@@ -126,6 +129,7 @@ const DodajOglas = () => {
     try {
       const { data: adData, error } = await supabase.from("ads").insert({
         user_id: user!.id,
+        title: parsed.data.title,
         category: parsed.data.category,
         location: parsed.data.location,
         start_date: format(parsed.data.startDate, "yyyy-MM-dd"),
@@ -184,6 +188,21 @@ const DodajOglas = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Naslov */}
+          <div>
+            <input
+              placeholder="Naslov oglasa (maks. 20 karaktera)"
+              value={title}
+              onChange={e => { if (e.target.value.length <= 20) { setTitle(e.target.value); setErrors(p => ({ ...p, title: "" })); } }}
+              className={inputClass}
+              maxLength={20}
+            />
+            <div className="flex justify-between mt-1">
+              {errors.title && <p className={errorClass}>{errors.title}</p>}
+              <span className="text-xs text-muted-foreground ml-auto">{title.length}/20</span>
+            </div>
+          </div>
+
           {/* Kategorija */}
           <div>
             <Select value={category} onValueChange={v => { setCategory(v); setErrors(p => ({ ...p, category: "" })); }}>

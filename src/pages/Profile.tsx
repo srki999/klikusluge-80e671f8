@@ -14,6 +14,7 @@ import {
 
 interface Ad {
   id: string;
+  title: string;
   category: string;
   location: string;
   price: number;
@@ -48,7 +49,7 @@ const Profile = () => {
     if (!user) return;
     const { data } = await supabase
       .from("ads")
-      .select("id, category, location, price, currency, start_date, end_date, description, status")
+      .select("id, title, category, location, price, currency, start_date, end_date, description, status")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (data) setMyAds(data);
@@ -136,7 +137,8 @@ const Profile = () => {
                 <div key={ad.id} className="rounded-xl border border-border bg-muted/50 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground">{ad.category}</p>
+                      <p className="text-sm font-semibold text-foreground">{ad.title || ad.category}</p>
+                      <p className="text-xs text-muted-foreground">{ad.category}</p>
                       <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1"><MapPin size={12} />{ad.location}</span>
                         <span className="flex items-center gap-1"><Banknote size={12} />{ad.price} {ad.currency}</span>
