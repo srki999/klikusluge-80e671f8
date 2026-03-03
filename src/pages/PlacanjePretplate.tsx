@@ -160,7 +160,7 @@ const PlacanjePretplate = () => {
               </button>
             </form>
 
-            <p className="mt-4 text-center text-xs text-muted-foreground">⚠️ Ovo je simulacija plaćanja</p>
+            
           </>
         )}
       </div>
