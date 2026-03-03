@@ -117,8 +117,11 @@ const Index = () => {
         setAds(data);
         offsetRef.current = data.length;
       } else {
-        setAds((prev) => [...prev, ...data]);
-        offsetRef.current += data.length;
+        setAds((prev) => {
+          const existingIds = new Set(prev.map(a => a.id));
+          const newAds = data.filter(a => !existingIds.has(a.id));
+          return [...prev, ...newAds];
+        });
       }
       setHasMore(data.length >= PAGE_SIZE);
     }
