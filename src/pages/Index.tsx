@@ -1,6 +1,8 @@
 import { Search, UserCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const ads = [
@@ -13,6 +15,18 @@ const ads = [
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      supabase.from("profiles").select("ime, prezime").eq("user_id", user.id).single()
+        .then(({ data }) => {
+          if (data) setUserName(`${data.ime} ${data.prezime}`.trim());
+        });
+    } else {
+      setUserName("");
+    }
+  }, [user]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -28,9 +42,12 @@ const Index = () => {
           <img src={logo} alt="Klik Usluge" className="h-24 w-auto" />
           <button
             onClick={() => navigate(user ? "/profile" : "/auth")}
-            className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 transition hover:bg-primary-foreground/25"
+            className="flex items-center gap-2 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 px-3 py-2 transition hover:bg-primary-foreground/25"
           >
             <UserCircle size={24} className="text-primary-foreground" />
+            {userName && (
+              <span className="text-sm font-medium text-primary-foreground">{userName}</span>
+            )}
           </button>
         </header>
 
