@@ -14,13 +14,13 @@ const Index = () => {
       <div className="w-full max-w-[1300px] overflow-hidden rounded-2xl shadow-2xl">
         {/* Header */}
         <header
-          className="flex items-center justify-between px-6 py-4"
+          className="flex items-center justify-between px-4 py-2"
           style={{
             background:
               "linear-gradient(135deg, hsl(225 35% 42%), hsl(225 40% 62%))",
           }}
         >
-          <img src={logo} alt="Klik Usluge" className="h-12 w-auto" />
+          <img src={logo} alt="Klik Usluge" className="h-24 w-auto" />
           <div className="h-10 w-10 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15" />
         </header>
 
