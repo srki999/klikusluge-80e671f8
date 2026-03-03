@@ -1,4 +1,5 @@
 import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText, Filter } from "lucide-react";
+import ApplyModal from "@/components/ApplyModal";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
@@ -57,6 +58,7 @@ const Index = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
   const [adOwner, setAdOwner] = useState<{ ime: string; prezime: string; telefon: string } | null>(null);
+  const [applyAd, setApplyAd] = useState<Ad | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const offsetRef = useRef(0);
@@ -357,7 +359,14 @@ const Index = () => {
                   </div>
                 </div>
                 {(!user || user.id !== ad.user_id) && (
-                  <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!user) { navigate("/auth"); return; }
+                      setApplyAd(ad);
+                    }}
+                    className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80"
+                  >
                     PRIJAVI SE
                   </button>
                 )}
@@ -427,11 +436,29 @@ const Index = () => {
                 )}
               </div>
               {(!user || user.id !== selectedAd.user_id) && (
-                <button className="mt-2 w-full rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80">
+                <button
+                  onClick={() => {
+                    if (!user) { navigate("/auth"); return; }
+                    setApplyAd(selectedAd);
+                    setSelectedAd(null);
+                  }}
+                  className="mt-2 w-full rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/80"
+                >
                   PRIJAVI SE
                 </button>
               )}
-            </div>
+
+      {/* Apply modal */}
+      {applyAd && user && (
+        <ApplyModal
+          open={!!applyAd}
+          onClose={() => setApplyAd(null)}
+          adId={applyAd.id}
+          userId={user.id}
+          adTitle={applyAd.title || applyAd.category}
+        />
+      )}
+    </div>
           )}
         </DialogContent>
       </Dialog>
