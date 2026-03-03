@@ -96,6 +96,7 @@ const Profile = () => {
   const handleEditSave = async () => {
     if (!editAd) return;
     const { error } = await supabase.from("ads").update({
+      title: editForm.title,
       category: editForm.category,
       location: editForm.location,
       price: Number(editForm.price),
