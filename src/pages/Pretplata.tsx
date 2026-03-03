@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { UserCircle, Crown } from "lucide-react";
+import { UserCircle, Crown, ArrowLeft, Lock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,8 @@ import badgeBronza from "@/assets/badge-bronza.png";
 import badgeSrebro from "@/assets/badge-srebro.png";
 import badgeZlato from "@/assets/badge-zlato.png";
 import badgePlatina from "@/assets/badge-platina.png";
+
+const planOrder = ["bronza", "srebro", "zlato", "platina"];
 
 const plans = [
   {
@@ -20,6 +22,7 @@ const plans = [
     badge: null,
     image: badgeBronza,
     discount: "10% popust na postavljanje oglasa",
+    discountPercent: 10,
   },
   {
     name: "srebro",
@@ -31,6 +34,7 @@ const plans = [
     badge: null,
     image: badgeSrebro,
     discount: "15% popust na postavljanje oglasa",
+    discountPercent: 15,
   },
   {
     name: "zlato",
@@ -42,6 +46,7 @@ const plans = [
     badge: "Najpopularniji",
     image: badgeZlato,
     discount: "20% popust na postavljanje oglasa",
+    discountPercent: 20,
   },
   {
     name: "platina",
@@ -53,6 +58,7 @@ const plans = [
     badge: null,
     image: badgePlatina,
     discount: "25% popust na postavljanje oglasa",
+    discountPercent: 25,
   },
 ];
 
@@ -60,16 +66,23 @@ const Pretplata = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [userName, setUserName] = useState("");
+  const [activePlan, setActivePlan] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
       supabase.from("profiles").select("ime, prezime").eq("user_id", user.id).single()
         .then(({ data }) => { if (data) setUserName(`${data.ime} ${data.prezime}`.trim()); });
+      supabase.from("subscriptions").select("plan_name").eq("user_id", user.id).eq("status", "active").order("created_at", { ascending: false }).limit(1).single()
+        .then(({ data }) => { if (data) setActivePlan(data.plan_name); });
     }
   }, [user]);
 
+  const currentPlanIndex = activePlan ? planOrder.indexOf(activePlan) : -1;
+
   const selectPlan = (plan: typeof plans[0]) => {
     if (!user) { navigate("/auth"); return; }
+    const planIndex = planOrder.indexOf(plan.name);
+    if (planIndex <= currentPlanIndex) return; // can't downgrade
     navigate("/placanje-pretplate", { state: { plan } });
   };
 
@@ -80,7 +93,16 @@ const Pretplata = () => {
         className="flex items-center justify-between px-4 py-2 shadow-lg flex-shrink-0"
         style={{ background: "linear-gradient(135deg, hsl(225 35% 42%), hsl(225 40% 62%))" }}
       >
-        <img src={logo} alt="Klik Usluge" className="h-20 w-auto cursor-pointer" onClick={() => navigate("/")} />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate("/")}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-primary-foreground/70 transition hover:bg-primary-foreground/15 hover:text-primary-foreground"
+            aria-label="Nazad na početnu"
+          >
+            <ArrowLeft size={22} />
+          </button>
+          <img src={logo} alt="Klik Usluge" className="h-20 w-auto cursor-pointer" onClick={() => navigate("/")} />
+        </div>
         <button
           onClick={() => navigate(user ? "/profile" : "/auth")}
           className="flex items-center gap-2 rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 px-3 py-2 transition hover:bg-primary-foreground/25"
@@ -98,45 +120,61 @@ const Pretplata = () => {
         </div>
 
         <div className="grid w-full max-w-[1200px] gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`group relative flex flex-col items-center rounded-2xl border bg-card p-5 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${plan.badge ? "ring-2 ring-secondary scale-[1.03]" : ""}`}
-              style={{ borderColor: plan.border }}
-            >
-              {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-secondary px-4 py-1 text-xs font-bold text-secondary-foreground shadow">
-                  {plan.badge}
-                </span>
-              )}
+          {plans.map((plan) => {
+            const planIndex = planOrder.indexOf(plan.name);
+            const isActive = plan.name === activePlan;
+            const isLower = planIndex <= currentPlanIndex && !isActive;
+            const isDisabled = isActive || isLower;
 
-              <img
-                src={plan.image}
-                alt={plan.label}
-                className="mb-3 h-20 w-auto object-contain"
-              />
+            return (
+              <div
+                key={plan.name}
+                className={`group relative flex flex-col items-center rounded-2xl border bg-card p-5 shadow-md transition-all duration-300 ${!isDisabled ? "hover:-translate-y-2 hover:shadow-xl" : "opacity-70"} ${plan.badge && !isDisabled ? "ring-2 ring-secondary scale-[1.03]" : ""}`}
+                style={{ borderColor: plan.border }}
+              >
+                {plan.badge && !isDisabled && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-secondary px-4 py-1 text-xs font-bold text-secondary-foreground shadow">
+                    {plan.badge}
+                  </span>
+                )}
 
-              <h2 className="mb-1 text-lg font-bold text-foreground">{plan.label}</h2>
+                {isActive && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-green-500 px-4 py-1 text-xs font-bold text-primary-foreground shadow">
+                    Aktivno
+                  </span>
+                )}
 
-              <p className="mb-3 text-center text-xs text-muted-foreground">{plan.discount}</p>
+                <img
+                  src={plan.image}
+                  alt={plan.label}
+                  className="mb-3 h-20 w-auto rounded-xl object-contain"
+                />
 
-              <div className="mb-4 text-center">
-                <span className="text-2xl font-extrabold text-foreground">{plan.priceEur}€</span>
-                <span className="ml-1 text-sm text-muted-foreground">/ mesec</span>
-                <p className="mt-0.5 text-sm text-muted-foreground">{plan.priceRsd} RSD mesečno</p>
+                <h2 className="mb-1 text-lg font-bold text-foreground">{plan.label}</h2>
+
+                <p className="mb-3 text-center text-xs text-muted-foreground">{plan.discount}</p>
+
+                <div className="mb-4 text-center">
+                  <span className="text-2xl font-extrabold text-foreground">{plan.priceEur}€</span>
+                  <span className="ml-1 text-sm text-muted-foreground">/ mesec</span>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{plan.priceRsd} RSD mesečno</p>
+                </div>
+
+                <div className="mt-auto w-full">
+                  <button
+                    onClick={() => selectPlan(plan)}
+                    disabled={isDisabled}
+                    className="w-full rounded-xl py-2.5 text-sm font-bold text-primary-foreground shadow-md transition-all duration-200 hover:opacity-90 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{ background: plan.gradient }}
+                  >
+                    {isActive ? "Trenutni plan" : isLower ? (
+                      <span className="flex items-center justify-center gap-1"><Lock size={14} /> Nedostupno</span>
+                    ) : "Izaberi plan"}
+                  </button>
+                </div>
               </div>
-
-              <div className="mt-auto w-full">
-                <button
-                  onClick={() => selectPlan(plan)}
-                  className="w-full rounded-xl py-2.5 text-sm font-bold text-white shadow-md transition-all duration-200 hover:opacity-90 hover:shadow-lg"
-                  style={{ background: plan.gradient }}
-                >
-                  Izaberi plan
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </main>
     </div>
