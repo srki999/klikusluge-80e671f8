@@ -131,6 +131,7 @@ const DodajOglas = () => {
         start_date: format(parsed.data.startDate, "yyyy-MM-dd"),
         end_date: format(parsed.data.endDate, "yyyy-MM-dd"),
         price: parsed.data.price,
+        currency,
         description: parsed.data.description,
         status: "pending_payment",
       });
