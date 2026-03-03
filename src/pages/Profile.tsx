@@ -119,16 +119,17 @@ const Profile = () => {
 
   const handleProfileSave = async () => {
     if (!user) return;
+    const fullPhone = `${profileCountryCode} ${profileForm.telefon.trim()}`;
     const { error } = await supabase.from("profiles").update({
       ime: profileForm.ime.trim(),
       prezime: profileForm.prezime.trim(),
-      telefon: profileForm.telefon.trim(),
+      telefon: fullPhone,
     }).eq("user_id", user.id);
     if (error) {
       toast.error("Greška pri čuvanju podataka");
     } else {
       toast.success("Podaci su sačuvani");
-      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: profileForm.telefon.trim() } : prev);
+      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: fullPhone } : prev);
       setEditingProfile(false);
     }
   };
