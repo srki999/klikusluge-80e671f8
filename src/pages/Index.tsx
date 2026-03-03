@@ -447,7 +447,18 @@ const Index = () => {
                   PRIJAVI SE
                 </button>
               )}
-            </div>
+
+      {/* Apply modal */}
+      {applyAd && user && (
+        <ApplyModal
+          open={!!applyAd}
+          onClose={() => setApplyAd(null)}
+          adId={applyAd.id}
+          userId={user.id}
+          adTitle={applyAd.title || applyAd.category}
+        />
+      )}
+    </div>
           )}
         </DialogContent>
       </Dialog>
