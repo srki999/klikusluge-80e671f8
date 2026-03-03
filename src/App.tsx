@@ -24,6 +24,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/dodaj-oglas" element={<DodajOglas />} />
+            <Route path="/placanje" element={<Placanje />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
