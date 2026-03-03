@@ -184,7 +184,7 @@ const Index = () => {
       <div className="h-[104px]" />
 
       {/* Body */}
-      <div className="mx-auto flex w-full max-w-[1300px]">
+      <div className="flex w-full max-w-[1300px] mx-auto">
         {/* Sidebar */}
         <aside
           className="sticky top-[104px] hidden h-[calc(100vh-104px)] w-64 shrink-0 p-5 md:block"
