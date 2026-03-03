@@ -28,9 +28,11 @@ const Index = () => {
   const [hasMore, setHasMore] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const offsetRef = useRef(0);
+  const searchRef = useRef("");
 
   // Fetch user name
   useEffect(() => {
