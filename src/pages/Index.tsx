@@ -15,6 +15,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const PAGE_SIZE = 10;
 
@@ -236,12 +247,44 @@ const Index = () => {
               <img
                 src={{ bronza: badgeBronza, srebro: badgeSrebro, zlato: badgeZlato, platina: badgePlatina }[userSub.plan_name] || badgeBronza}
                 alt={userSub.plan_name}
-                className="h-12 w-auto rounded-lg object-contain mb-1"
+                className="h-20 w-auto rounded-lg object-contain mb-2"
               />
               <p className="text-xs font-bold uppercase text-secondary-foreground tracking-wider">{userSub.plan_name}</p>
               <p className="mt-0.5 text-[11px] text-secondary-foreground/80">
                 do {new Date(userSub.end_date).toLocaleDateString("sr-Latn-RS")}
               </p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button className="mt-3 w-full rounded-lg border border-destructive/50 bg-destructive/10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-destructive transition hover:bg-destructive/20">
+                    Otkaži pretplatu
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Otkazivanje pretplate</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Da li ste sigurni da želite da otkažete vašu "{userSub.plan_name}" pretplatu? Ova akcija se ne može poništiti.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Ne</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      onClick={async () => {
+                        if (!user) return;
+                        await supabase
+                          .from("subscriptions")
+                          .update({ status: "cancelled" })
+                          .eq("user_id", user.id)
+                          .eq("status", "active");
+                        setUserSub(null);
+                      }}
+                    >
+                      Da
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           )}
         </aside>
