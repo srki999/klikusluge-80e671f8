@@ -89,7 +89,10 @@ const Index = () => {
 
     const term = searchRef.current.trim();
     if (term) {
-      query = query.or(`category.ilike.%${term}%,location.ilike.%${term}%,description.ilike.%${term}%`);
+      query = query.or(`title.ilike.%${term}%,category.ilike.%${term}%,location.ilike.%${term}%,description.ilike.%${term}%`);
+    }
+    if (selectedCategories.length > 0) {
+      query = query.in("category", selectedCategories);
     }
 
     const { data, error } = await query;
