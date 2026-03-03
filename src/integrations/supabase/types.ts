@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      ads: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          end_date: string
+          id: string
+          location: string
+          price: number
+          start_date: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          end_date: string
+          id?: string
+          location: string
+          price: number
+          start_date: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          location?: string
+          price?: number
+          start_date?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

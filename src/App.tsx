@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import DodajOglas from "./pages/DodajOglas";
+import Placanje from "./pages/Placanje";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/dodaj-oglas" element={<DodajOglas />} />
+            <Route path="/placanje" element={<Placanje />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -44,8 +44,11 @@ const Index = () => {
                 "linear-gradient(180deg, hsl(30 100% 50%), hsl(30 95% 60%))",
             }}
           >
-            <button className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:bg-secondary-foreground/10">
-              Prijavi novi oglas
+            <button
+              onClick={() => navigate(user ? "/dodaj-oglas" : "/auth")}
+              className="w-full rounded-xl border border-secondary-foreground/30 px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-md transition hover:bg-secondary-foreground/10"
+            >
+              DODAJ OGLAS
             </button>
           </aside>
 
