@@ -1,4 +1,4 @@
-import { Bell } from "lucide-react";
+import { Bell, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -81,6 +81,19 @@ const NotificationBell = () => {
       .update({ is_read: true })
       .in("id", unreadIds);
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+  };
+
+  const handleDeleteNotification = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    await supabase.from("notifications").delete().eq("id", id);
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handleDeleteAll = async () => {
+    if (!user || notifications.length === 0) return;
+    const ids = notifications.map((n) => n.id);
+    await supabase.from("notifications").delete().in("id", ids);
+    setNotifications([]);
   };
 
   const handleOpen = (isOpen: boolean) => {
@@ -168,8 +181,16 @@ const NotificationBell = () => {
           </button>
         </PopoverTrigger>
         <PopoverContent align="end" className="w-80 p-0">
-          <div className="border-b px-4 py-3">
+          <div className="border-b px-4 py-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold">Obaveštenja</h3>
+            {notifications.length > 0 && (
+              <button
+                onClick={handleDeleteAll}
+                className="text-xs text-muted-foreground hover:text-destructive transition"
+              >
+                Obriši sve
+              </button>
+            )}
           </div>
           <ScrollArea className="max-h-72">
             {notifications.length === 0 ? (
@@ -182,8 +203,14 @@ const NotificationBell = () => {
                   <div
                     key={n.id}
                     onClick={() => handleNotificationClick(n)}
-                    className={`px-4 py-3 text-sm ${!n.is_read ? "bg-accent/40" : ""} ${isActionable(n) ? "cursor-pointer hover:bg-accent/60 transition" : ""}`}
+                    className={`group relative px-4 py-3 pr-9 text-sm ${!n.is_read ? "bg-accent/40" : ""} ${isActionable(n) ? "cursor-pointer hover:bg-accent/60 transition" : ""}`}
                   >
+                    <button
+                      onClick={(e) => handleDeleteNotification(e, n.id)}
+                      className="absolute right-2 top-3 hidden group-hover:flex items-center justify-center rounded-full p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition"
+                    >
+                      <X size={14} />
+                    </button>
                     <p className="text-foreground">{n.message}</p>
                     <div className="mt-1 flex items-center justify-between">
                       <p className="text-xs text-muted-foreground">
