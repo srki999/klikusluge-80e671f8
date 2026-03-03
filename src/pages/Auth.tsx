@@ -67,6 +67,8 @@ const Auth = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [countryCode, setCountryCode] = useState("+381");
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
