@@ -268,6 +268,52 @@ const Profile = () => {
               </button>
             </div>
           )}
+          {/* Change password section */}
+          <div className="mt-6 border-t border-border pt-5">
+            <h2 className="mb-3 text-sm font-bold text-foreground">Promena lozinke</h2>
+            {changingPassword ? (
+              <div className="space-y-3">
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    placeholder="Nova lozinka"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition">
+                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground">Min. 6 karaktera, jedan broj i jedan specijalan karakter.</p>
+                <div className="relative">
+                  <input
+                    type={showConfirmNewPassword ? "text" : "password"}
+                    placeholder="Potvrda nove lozinke"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <button type="button" onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition">
+                    {showConfirmNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={handlePasswordChange} className="flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90" style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}>
+                    <Save size={16} /> Sačuvaj
+                  </button>
+                  <button onClick={() => { setChangingPassword(false); setNewPassword(""); setConfirmNewPassword(""); }} className="flex-1 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
+                    Otkaži
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button onClick={() => setChangingPassword(true)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
+                <Lock size={16} /> Promeni lozinku
+              </button>
+            )}
+          </div>
+
           <button onClick={handleSignOut} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90" style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}>
             <LogOut size={16} /> Odjavite se
           </button>
