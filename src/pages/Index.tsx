@@ -1,4 +1,4 @@
-import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText, Filter } from "lucide-react";
+import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText, Filter, MessageCircle } from "lucide-react";
 import ApplyModal from "@/components/ApplyModal";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
@@ -412,6 +412,14 @@ const Index = () => {
           <div ref={sentinelRef} className="h-4" />
         </main>
       </div>
+
+      {/* Contact button */}
+      <button
+        onClick={() => navigate("/kontakt")}
+        className="fixed bottom-6 left-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition hover:bg-primary/80"
+      >
+        <MessageCircle size={20} />
+      </button>
 
       {/* Scroll to top */}
       {scrolled && (
