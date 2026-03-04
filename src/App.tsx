@@ -11,6 +11,7 @@ import DodajOglas from "./pages/DodajOglas";
 import Placanje from "./pages/Placanje";
 import Pretplata from "./pages/Pretplata";
 import PlacanjePretplate from "./pages/PlacanjePretplate";
+import Kontakt from "./pages/Kontakt";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
