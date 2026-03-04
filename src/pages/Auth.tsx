@@ -282,7 +282,18 @@ const Auth = () => {
           </button>
         </form>
 
-        <p className="mt-5 text-center text-sm text-muted-foreground">
+        {isLogin && (
+          <p className="mt-3 text-center">
+            <button
+              onClick={() => navigate("/zaboravljena-lozinka")}
+              className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2 transition"
+            >
+              Zaboravio sam lozinku
+            </button>
+          </p>
+        )}
+
+        <p className="mt-3 text-center text-sm text-muted-foreground">
           {isLogin ? "Nemate nalog? " : "Već imate nalog? "}
           <button
             onClick={() => { setIsLogin(!isLogin); setErrors({}); }}
