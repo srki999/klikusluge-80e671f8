@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
+import nodemailer from "npm:nodemailer@6.9.16";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -62,23 +62,25 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Send email via Gmail SMTP
+    // Send email via Gmail SMTP using nodemailer
     const gmailUser = Deno.env.get('GMAIL_USER')!;
     const gmailPassword = Deno.env.get('GMAIL_APP_PASSWORD')!;
 
-    const client = new SmtpClient();
-    await client.connectTLS({
-      hostname: 'smtp.gmail.com',
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
       port: 465,
-      username: gmailUser,
-      password: gmailPassword,
+      secure: true,
+      auth: {
+        user: gmailUser,
+        pass: gmailPassword,
+      },
     });
 
-    await client.send({
-      from: gmailUser,
+    await transporter.sendMail({
+      from: `"Klik Usluge" <${gmailUser}>`,
       to: email,
       subject: 'Klik Usluge - Kod za resetovanje lozinke',
-      content: `Vaš kod za resetovanje lozinke je: ${code}\n\nKod važi 10 minuta.\n\nAko niste zatražili resetovanje lozinke, ignorišite ovaj email.`,
+      text: `Vaš kod za resetovanje lozinke je: ${code}\n\nKod važi 10 minuta.\n\nAko niste zatražili resetovanje lozinke, ignorišite ovaj email.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background: #ffffff; border-radius: 16px;">
           <h2 style="text-align: center; color: #1a1a2e; margin-bottom: 8px;">Klik Usluge</h2>
@@ -91,8 +93,6 @@ Deno.serve(async (req) => {
         </div>
       `,
     });
-
-    await client.close();
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
