@@ -73,7 +73,7 @@ const serbianCities = [
 ];
 
 const adSchema = z.object({
-  title: z.string().trim().min(1, "Naslov je obavezan").max(20, "Naslov može imati najviše 20 karaktera"),
+  title: z.string().trim().min(1, "Naslov je obavezan").max(30, "Naslov može imati najviše 30 karaktera"),
   category: z.string().min(1, "Kategorija je obavezna"),
   location: z.string().trim().min(1, "Mesto je obavezno").max(100),
   startDate: z.date({ required_error: "Datum početka je obavezan" }),
