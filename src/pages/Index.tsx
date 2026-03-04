@@ -302,6 +302,22 @@ const Index = () => {
 
         {/* Main content */}
         <main className="min-h-[calc(100vh-104px)] flex-1 bg-muted p-6 md:p-8">
+          {/* Mobile buttons above search */}
+          <div className="flex gap-3 mb-4 md:hidden">
+            <button
+              onClick={() => navigate(user ? "/dodaj-oglas" : "/auth")}
+              className="flex-1 rounded-xl border border-border bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/90"
+            >
+              DODAJ OGLAS
+            </button>
+            <button
+              onClick={() => navigate(user ? "/pretplata" : "/auth")}
+              className="flex-1 rounded-xl border border-border bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground shadow transition hover:bg-secondary/90"
+            >
+              MODEL PRETPLATE
+            </button>
+          </div>
+
           {/* Search bar */}
           <form
             onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
