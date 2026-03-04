@@ -145,6 +145,34 @@ const Profile = () => {
     navigate("/");
   };
 
+  const handlePasswordChange = async () => {
+    if (newPassword.length < 6) {
+      toast.error("Lozinka mora imati najmanje 6 karaktera");
+      return;
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      toast.error("Lozinka mora sadržati barem jedan broj");
+      return;
+    }
+    if (!/[^a-zA-Z0-9]/.test(newPassword)) {
+      toast.error("Lozinka mora sadržati barem jedan specijalan karakter");
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      toast.error("Lozinke se ne poklapaju");
+      return;
+    }
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      toast.error("Greška pri promeni lozinke");
+    } else {
+      toast.success("Lozinka je uspešno promenjena!");
+      setChangingPassword(false);
+      setNewPassword("");
+      setConfirmNewPassword("");
+    }
+  };
+
   const handleDelete = async (adId: string) => {
     const { error } = await supabase.from("ads").update({ status: "deleted" }).eq("id", adId);
     if (error) {
