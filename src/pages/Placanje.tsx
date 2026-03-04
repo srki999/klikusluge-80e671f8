@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
+import PrivacyPolicySection from "@/components/PrivacyPolicySection";
 
 const AD_BASE_PRICE = 500; // RSD
 
@@ -32,6 +33,7 @@ const Placanje = () => {
   const [success, setSuccess] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [subPlan, setSubPlan] = useState<string | null>(null);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -78,7 +80,7 @@ const Placanje = () => {
 
   const expiryParts = form.expiry.split("/");
   const expiryValid = expiryParts.length === 2 && parseInt(expiryParts[0], 10) >= 1 && parseInt(expiryParts[0], 10) <= 12 && expiryParts[1]?.length === 2;
-  const valid = form.name.trim().length > 1 && form.card.replace(/\s/g, "").length === 16 && form.expiry.length === 5 && expiryValid && form.cvv.length === 3;
+  const valid = form.name.trim().length > 1 && form.card.replace(/\s/g, "").length === 16 && form.expiry.length === 5 && expiryValid && form.cvv.length === 3 && privacyAgreed;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,6 +180,8 @@ const Placanje = () => {
                   />
                 </div>
               </div>
+
+              <PrivacyPolicySection agreed={privacyAgreed} onAgreeChange={setPrivacyAgreed} />
 
               <button
                 type="submit"
