@@ -33,6 +33,7 @@ const Placanje = () => {
   const [success, setSuccess] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [subPlan, setSubPlan] = useState<string | null>(null);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   useEffect(() => {
     if (user) {
