@@ -66,7 +66,7 @@ const Kontakt = () => {
               Facebook
             </a>
             <a
-              href="https://x.com/klikusluge"
+              href="https://x.com/usluge31592"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
