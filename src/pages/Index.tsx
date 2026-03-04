@@ -450,7 +450,7 @@ const Index = () => {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User size={16} className="shrink-0" />
                 {adOwner ? (
-                  <span>{adOwner.ime} {adOwner.prezime}{adOwner.telefon ? ` • ${adOwner.telefon}` : ""}</span>
+                  <span>{adOwner.ime} {adOwner.prezime}</span>
                 ) : (
                   <span className="animate-pulse">Učitavanje...</span>
                 )}
