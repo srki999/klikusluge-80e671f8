@@ -200,11 +200,11 @@ const DodajOglas = () => {
           {/* Naslov */}
           <div>
             <input
-              placeholder="Naslov oglasa (maks. 20 karaktera)"
+              placeholder="Naslov oglasa (maks. 30 karaktera)"
               value={title}
-              onChange={e => { if (e.target.value.length <= 20) { setTitle(e.target.value); setErrors(p => ({ ...p, title: "" })); } }}
+              onChange={e => { if (e.target.value.length <= 30) { setTitle(e.target.value); setErrors(p => ({ ...p, title: "" })); } }}
               className={inputClass}
-              maxLength={20}
+              maxLength={30}
             />
             <div className="flex justify-between mt-1">
               {errors.title && <p className={errorClass}>{errors.title}</p>}
