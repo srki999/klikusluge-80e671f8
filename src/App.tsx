@@ -12,6 +12,8 @@ import Placanje from "./pages/Placanje";
 import Pretplata from "./pages/Pretplata";
 import PlacanjePretplate from "./pages/PlacanjePretplate";
 import Kontakt from "./pages/Kontakt";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
