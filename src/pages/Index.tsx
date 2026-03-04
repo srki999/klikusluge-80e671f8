@@ -212,7 +212,7 @@ const Index = () => {
           className="h-24 w-auto cursor-pointer"
           onClick={() => navigate("/")}
         />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold uppercase tracking-widest text-primary-foreground select-none">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-base md:text-2xl font-extrabold uppercase tracking-widest text-primary-foreground select-none whitespace-nowrap">
           KLIK USLUGE
         </h1>
         <div className="flex items-center gap-2">
