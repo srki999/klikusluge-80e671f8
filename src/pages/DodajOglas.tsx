@@ -374,7 +374,7 @@ const DodajOglas = () => {
           {/* Nivo istiskivanja */}
           <div>
             <p className="mb-1 text-sm font-medium text-foreground">
-              Koliko želite da vam se oglas istiskuje? (nivo 1 najmanje – nivo 4 najviše)
+              Izaberite nivo promocije vašeg oglasa na sajtu.
             </p>
             <Select value={String(prominenceLevel)} onValueChange={v => setProminenceLevel(Number(v))}>
               <SelectTrigger className="w-full rounded-xl border-border bg-popover py-3 text-sm">
