@@ -212,7 +212,7 @@ const Index = () => {
           className="h-24 w-auto cursor-pointer"
           onClick={() => navigate("/")}
         />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-base md:text-2xl font-extrabold uppercase tracking-widest text-primary-foreground select-none whitespace-nowrap">
+        <h1 className="absolute left-1/2 -translate-x-1/2 hidden md:block text-2xl font-extrabold uppercase tracking-widest text-primary-foreground select-none">
           KLIK USLUGE
         </h1>
         <div className="flex items-center gap-2">
@@ -306,13 +306,15 @@ const Index = () => {
           <div className="flex gap-3 mb-4 md:hidden">
             <button
               onClick={() => navigate(user ? "/dodaj-oglas" : "/auth")}
-              className="flex-1 rounded-xl border border-border bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow transition hover:bg-primary/90"
+              className="flex-1 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow transition hover:opacity-90"
+              style={{ background: "hsl(25 100% 50%)" }}
             >
               DODAJ OGLAS
             </button>
             <button
               onClick={() => navigate(user ? "/pretplata" : "/auth")}
-              className="flex-1 rounded-xl border border-border bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground shadow transition hover:bg-secondary/90"
+              className="flex-1 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow transition hover:opacity-90"
+              style={{ background: "hsl(25 100% 50%)" }}
             >
               MODEL PRETPLATE
             </button>

@@ -87,7 +87,7 @@ const Pretplata = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header
         className="flex items-center justify-between px-4 py-2 shadow-lg flex-shrink-0"
