@@ -5,20 +5,29 @@ const Kontakt = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-      <div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-8 shadow-lg">
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div
+        className="relative flex items-center justify-center py-8"
+        style={{
+          background:
+            "linear-gradient(135deg, hsl(var(--header-gradient-from)), hsl(var(--header-gradient-to)))",
+        }}
+      >
         <button
           onClick={() => navigate("/")}
-          className="absolute left-4 top-4 rounded-full p-2 text-muted-foreground transition hover:bg-muted"
+          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white transition hover:bg-white/30"
         >
           <ArrowLeft size={20} />
         </button>
-
-        <h1 className="mb-6 text-center text-2xl font-extrabold uppercase tracking-widest text-foreground">
+        <h1 className="text-2xl font-extrabold uppercase tracking-widest text-white">
           Kontakt
         </h1>
+      </div>
 
-        <div className="space-y-5">
+      {/* Content */}
+      <div className="mx-auto max-w-lg px-4 py-10">
+        <div className="space-y-5 rounded-2xl border border-border bg-card p-8 shadow-lg">
           {/* Email */}
           <div className="flex items-center gap-3">
             <Mail size={20} className="shrink-0 text-primary" />
