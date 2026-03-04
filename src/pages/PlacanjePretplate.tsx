@@ -15,6 +15,7 @@ const PlacanjePretplate = () => {
   const [form, setForm] = useState({ name: "", card: "", expiry: "", cvv: "" });
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   if (!plan) {
     navigate("/pretplata");
