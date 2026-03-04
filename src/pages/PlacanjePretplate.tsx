@@ -142,6 +142,8 @@ const PlacanjePretplate = () => {
                 </div>
               </div>
 
+              <PrivacyPolicySection agreed={privacyAgreed} onAgreeChange={setPrivacyAgreed} />
+
               <button
                 type="submit"
                 disabled={!valid || processing}
