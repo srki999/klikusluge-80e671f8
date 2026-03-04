@@ -95,6 +95,12 @@ const Profile = () => {
   const [profileCountryCode, setProfileCountryCode] = useState("+381");
   const [showProfileCountryDropdown, setShowProfileCountryDropdown] = useState(false);
 
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
