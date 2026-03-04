@@ -208,7 +208,7 @@ const DodajOglas = () => {
             />
             <div className="flex justify-between mt-1">
               {errors.title && <p className={errorClass}>{errors.title}</p>}
-              <span className="text-xs text-muted-foreground ml-auto">{title.length}/20</span>
+              <span className="text-xs text-muted-foreground ml-auto">{title.length}/30</span>
             </div>
           </div>
 
