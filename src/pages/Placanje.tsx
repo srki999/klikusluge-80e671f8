@@ -80,7 +80,7 @@ const Placanje = () => {
 
   const expiryParts = form.expiry.split("/");
   const expiryValid = expiryParts.length === 2 && parseInt(expiryParts[0], 10) >= 1 && parseInt(expiryParts[0], 10) <= 12 && expiryParts[1]?.length === 2;
-  const valid = form.name.trim().length > 1 && form.card.replace(/\s/g, "").length === 16 && form.expiry.length === 5 && expiryValid && form.cvv.length === 3;
+  const valid = form.name.trim().length > 1 && form.card.replace(/\s/g, "").length === 16 && form.expiry.length === 5 && expiryValid && form.cvv.length === 3 && privacyAgreed;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
