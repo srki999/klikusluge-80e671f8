@@ -73,7 +73,7 @@ const serbianCities = [
 ];
 
 const adSchema = z.object({
-  title: z.string().trim().min(1, "Naslov je obavezan").max(20, "Naslov može imati najviše 20 karaktera"),
+  title: z.string().trim().min(1, "Naslov je obavezan").max(30, "Naslov može imati najviše 30 karaktera"),
   category: z.string().min(1, "Kategorija je obavezna"),
   location: z.string().trim().min(1, "Mesto je obavezno").max(100),
   startDate: z.date({ required_error: "Datum početka je obavezan" }),
@@ -200,15 +200,15 @@ const DodajOglas = () => {
           {/* Naslov */}
           <div>
             <input
-              placeholder="Naslov oglasa (maks. 20 karaktera)"
+              placeholder="Naslov oglasa (maks. 30 karaktera)"
               value={title}
-              onChange={e => { if (e.target.value.length <= 20) { setTitle(e.target.value); setErrors(p => ({ ...p, title: "" })); } }}
+              onChange={e => { if (e.target.value.length <= 30) { setTitle(e.target.value); setErrors(p => ({ ...p, title: "" })); } }}
               className={inputClass}
-              maxLength={20}
+              maxLength={30}
             />
             <div className="flex justify-between mt-1">
               {errors.title && <p className={errorClass}>{errors.title}</p>}
-              <span className="text-xs text-muted-foreground ml-auto">{title.length}/20</span>
+              <span className="text-xs text-muted-foreground ml-auto">{title.length}/30</span>
             </div>
           </div>
 
@@ -374,7 +374,7 @@ const DodajOglas = () => {
           {/* Nivo istiskivanja */}
           <div>
             <p className="mb-1 text-sm font-medium text-foreground">
-              Koliko želite da vam se oglas istiskuje? (nivo 1 najmanje – nivo 4 najviše)
+              Izaberite nivo promocije vašeg oglasa na sajtu.
             </p>
             <Select value={String(prominenceLevel)} onValueChange={v => setProminenceLevel(Number(v))}>
               <SelectTrigger className="w-full rounded-xl border-border bg-popover py-3 text-sm">
