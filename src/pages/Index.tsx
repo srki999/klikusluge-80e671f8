@@ -416,9 +416,10 @@ const Index = () => {
       {/* Contact button */}
       <button
         onClick={() => navigate("/kontakt")}
-        className="fixed bottom-6 left-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition hover:bg-primary/80"
+        className="fixed bottom-6 left-6 z-50 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold uppercase tracking-wider text-primary-foreground shadow-lg transition hover:bg-primary/80"
       >
-        <MessageCircle size={20} />
+        <MessageCircle size={18} />
+        KONTAKT
       </button>
 
       {/* Scroll to top */}
