@@ -50,20 +50,20 @@ const Kontakt = () => {
           </div>
 
           {/* Telefon */}
-          <div className="flex items-center gap-3">
-            <Phone size={20} className="shrink-0 text-primary" />
+          <div className="flex items-center gap-4">
+            <Phone size={24} className="shrink-0 text-primary" />
             <a
               href="tel:+381116578432"
-              className="text-sm text-foreground underline underline-offset-2 hover:opacity-80"
+              className="text-base text-foreground underline underline-offset-2 hover:opacity-80"
             >
               +381 11 657 8432
             </a>
           </div>
 
           {/* Adresa */}
-          <div className="flex items-center gap-3">
-            <MapPin size={20} className="shrink-0 text-primary" />
-            <span className="text-sm text-foreground">
+          <div className="flex items-center gap-4">
+            <MapPin size={24} className="shrink-0 text-primary" />
+            <span className="text-base text-foreground">
               Knez Mihailova 22, 11000 Beograd, Srbija
             </span>
           </div>
