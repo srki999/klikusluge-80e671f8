@@ -6,6 +6,15 @@ const Kontakt = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Orange gradient bar */}
+      <div
+        className="h-2 w-full"
+        style={{
+          background:
+            "linear-gradient(90deg, hsl(var(--sidebar-gradient-from)), hsl(var(--sidebar-gradient-via)), hsl(var(--sidebar-gradient-to)))",
+        }}
+      />
+
       {/* Header */}
       <div
         className="relative flex items-center justify-center py-8"
