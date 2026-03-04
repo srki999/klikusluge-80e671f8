@@ -35,7 +35,7 @@ const App = () => (
             <Route path="/placanje-pretplate" element={<PlacanjePretplate />} />
             <Route path="/kontakt" element={<Kontakt />} />
             <Route path="/zaboravljena-lozinka" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
