@@ -104,8 +104,11 @@ const NotificationBell = () => {
   };
 
   const isActionable = (n: Notification) => {
-    // Actionable if someone applied to the user's ad (applicant_id is NOT the current user)
-    return n.ad_id && n.applicant_id !== user?.id;
+    // Actionable only if someone applied to the user's ad and it's not a rejection/closure notification
+    if (!n.ad_id || n.applicant_id === user?.id) return false;
+    const msg = n.message.toLowerCase();
+    if (msg.includes("odbijena") || msg.includes("zatvoren") || msg.includes("prihvaćena") || msg.includes("prihvatili ste")) return false;
+    return true;
   };
 
   const handleNotificationClick = async (n: Notification) => {
@@ -192,7 +195,7 @@ const NotificationBell = () => {
               </button>
             )}
           </div>
-          <ScrollArea className="max-h-72">
+          <ScrollArea className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <p className="px-4 py-8 text-center text-sm text-muted-foreground">
                 Nemate obaveštenja
