@@ -32,14 +32,18 @@ const Kontakt = () => {
       </div>
 
       {/* Content */}
-      <div className="mx-auto max-w-lg px-4 py-10">
-        <div className="space-y-5 rounded-2xl border border-border bg-card p-8 shadow-lg">
+      <div className="mx-auto max-w-xl px-4 py-10">
+        <div className="space-y-6 rounded-2xl border border-border bg-card p-10 shadow-lg">
+          <h2 className="text-center text-xl font-bold uppercase tracking-wide text-foreground">
+            Naše kontakt informacije
+          </h2>
+
           {/* Email */}
-          <div className="flex items-center gap-3">
-            <Mail size={20} className="shrink-0 text-primary" />
+          <div className="flex items-center gap-4">
+            <Mail size={24} className="shrink-0 text-primary" />
             <a
               href="mailto:klikusluge@gmail.com"
-              className="text-sm text-foreground underline underline-offset-2 hover:opacity-80"
+              className="text-base text-foreground underline underline-offset-2 hover:opacity-80"
             >
               klikusluge@gmail.com
             </a>
