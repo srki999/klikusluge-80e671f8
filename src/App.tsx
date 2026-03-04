@@ -31,6 +31,7 @@ const App = () => (
             <Route path="/placanje" element={<Placanje />} />
             <Route path="/pretplata" element={<Pretplata />} />
             <Route path="/placanje-pretplate" element={<PlacanjePretplate />} />
+            <Route path="/kontakt" element={<Kontakt />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
