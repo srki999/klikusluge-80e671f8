@@ -88,7 +88,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<{ ime: string; prezime: string; telefon: string; iskustva: string } | null>(null);
   const [myAds, setMyAds] = useState<Ad[]>([]);
   const [editAd, setEditAd] = useState<Ad | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "" });
+  const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "", start_date: "", end_date: "" });
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
