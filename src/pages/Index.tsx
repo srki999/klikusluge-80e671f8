@@ -138,15 +138,19 @@ const Index = () => {
     );
   };
 
-  // Search handler
-  const handleSearch = useCallback(() => {
-    searchRef.current = searchTerm;
-    offsetRef.current = 0;
-    setHasMore(true);
-    setAds([]);
-    setInitialLoad(true);
-    fetchAds(true);
-  }, [searchTerm, fetchAds]);
+  // Live search: debounce and auto-trigger on typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      searchRef.current = searchTerm;
+      offsetRef.current = 0;
+      setHasMore(true);
+      setAds([]);
+      setInitialLoad(true);
+      fetchAds(true);
+    }, 300);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
 
   // Re-fetch when categories change
   useEffect(() => {
