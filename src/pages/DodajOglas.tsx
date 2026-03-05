@@ -49,28 +49,8 @@ const prominenceLevels = [
   { level: 4, label: "Nivo 4 – 1.200 RSD", price: 1200 },
 ];
 
-const serbianCities = [
-  "Beograd", "Novi Sad", "Niš", "Kragujevac", "Subotica", "Zrenjanin", "Pančevo",
-  "Čačak", "Novi Pazar", "Kraljevo", "Smederevo", "Leskovac", "Užice", "Vranje",
-  "Valjevo", "Šabac", "Sombor", "Požarevac", "Pirot", "Zaječar", "Kruševac",
-  "Kikinda", "Sremska Mitrovica", "Jagodina", "Vršac", "Bor", "Prokuplje",
-  "Loznica", "Prijepolje", "Aranđelovac", "Gornji Milanovac", "Paraćin",
-  "Trstenik", "Aleksinac", "Bečej", "Ruma", "Inđija", "Stara Pazova",
-  "Temerin", "Bačka Palanka", "Apatin", "Kula", "Senta", "Kanjiža",
-  "Ada", "Titel", "Srbobran", "Vrbas", "Bačka Topola", "Mali Iđoš",
-  "Kovačica", "Opovo", "Alibunar", "Plandište", "Bela Crkva",
-  "Knjaževac", "Negotin", "Kladovo", "Majdanpek", "Žagubica",
-  "Petrovac na Mlavi", "Kučevo", "Malo Crniće", "Veliko Gradište",
-  "Golubac", "Žabari", "Svilajnac", "Despotovac", "Ćuprija", "Rekovac",
-  "Batočina", "Knić", "Lapovo", "Topola", "Rača",
-  "Bajina Bašta", "Kosjerić", "Čajetina", "Arilje", "Ivanjica", "Lučani",
-  "Tutin", "Sjenica", "Raška", "Vrnjačka Banja", "Aleksandrovac", "Brus",
-  "Ćićevac", "Varvarin", "Blace", "Žitorađa", "Kuršumlija",
-  "Doljevac", "Gadžin Han", "Merošina", "Svrljig", "Sokobanja",
-  "Dimitrovgrad", "Babušnica", "Bela Palanka", "Vlasotince", "Lebane",
-  "Medveđa", "Bojnik", "Crna Trava", "Bosilegrad", "Surdulica",
-  "Vladičin Han", "Trgovište", "Bujanovac", "Preševo",
-];
+// Cities imported from shared data
+import { serbianCities } from "@/data/serbianCities";
 
 const adSchema = z.object({
   title: z.string().trim().min(1, "Naslov je obavezan").max(30, "Naslov može imati najviše 30 karaktera"),

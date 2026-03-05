@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { serbianCities } from "@/data/serbianCities";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -90,6 +91,8 @@ const Profile = () => {
   const [myAds, setMyAds] = useState<Ad[]>([]);
   const [editAd, setEditAd] = useState<Ad | null>(null);
   const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "", start_date: "", end_date: "" });
+  const [editLocationSuggestions, setEditLocationSuggestions] = useState<string[]>([]);
+  const [showEditLocationSuggestions, setShowEditLocationSuggestions] = useState(false);
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
@@ -438,9 +441,48 @@ const Profile = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="relative">
               <label className="mb-1 block text-sm font-medium text-foreground">Lokacija</label>
-              <input value={editForm.location} onChange={(e) => setEditForm((f) => ({ ...f, location: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <input
+                value={editForm.location}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setEditForm((f) => ({ ...f, location: val }));
+                  if (val.trim().length >= 3) {
+                    const filtered = serbianCities.filter(c =>
+                      c.toLowerCase().startsWith(val.trim().toLowerCase())
+                    );
+                    setEditLocationSuggestions(filtered.slice(0, 6));
+                    setShowEditLocationSuggestions(filtered.length > 0);
+                  } else {
+                    setShowEditLocationSuggestions(false);
+                  }
+                }}
+                onFocus={() => {
+                  if (editForm.location.trim().length >= 3 && editLocationSuggestions.length > 0) {
+                    setShowEditLocationSuggestions(true);
+                  }
+                }}
+                onBlur={() => setTimeout(() => setShowEditLocationSuggestions(false), 150)}
+                className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+              />
+              {showEditLocationSuggestions && (
+                <div className="absolute left-0 top-full z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-popover shadow-lg">
+                  {editLocationSuggestions.map(city => (
+                    <button
+                      key={city}
+                      type="button"
+                      onMouseDown={() => {
+                        setEditForm(f => ({ ...f, location: city }));
+                        setShowEditLocationSuggestions(false);
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-sm text-foreground transition hover:bg-muted"
+                    >
+                      {city}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Cena</label>
