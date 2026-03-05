@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
-import { LogOut, ArrowLeft, Pencil, Trash2, MapPin, Banknote, Calendar, Save, Lock, Eye, EyeOff } from "lucide-react";
+import { LogOut, ArrowLeft, Pencil, Trash2, MapPin, Banknote, Calendar, Save, Lock, Eye, EyeOff, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -80,6 +80,7 @@ interface Ad {
   end_date: string;
   description: string;
   status: string;
+  prominence_level: number;
 }
 
 const Profile = () => {
@@ -117,7 +118,7 @@ const Profile = () => {
     if (!user) return;
     const { data } = await supabase
       .from("ads")
-      .select("id, title, category, location, price, currency, start_date, end_date, description, status")
+      .select("id, title, category, location, price, currency, start_date, end_date, description, status, prominence_level")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (data) setMyAds(data);
@@ -379,6 +380,16 @@ const Profile = () => {
                       </span>
                     </div>
                     <div className="flex shrink-0 gap-2">
+                      {ad.status === "pending_payment" && (
+                        <button
+                          onClick={() => navigate("/placanje", { state: { ad } })}
+                          className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs font-bold text-secondary-foreground shadow transition hover:opacity-90"
+                          style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}
+                          title="Dovrši uplatu"
+                        >
+                          <CreditCard size={14} /> Plati
+                        </button>
+                      )}
                       <button
                         onClick={() => openEdit(ad)}
                         className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-primary/10 hover:text-primary"
