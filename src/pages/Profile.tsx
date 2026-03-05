@@ -88,7 +88,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<{ ime: string; prezime: string; telefon: string; iskustva: string } | null>(null);
   const [myAds, setMyAds] = useState<Ad[]>([]);
   const [editAd, setEditAd] = useState<Ad | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "" });
+  const [editForm, setEditForm] = useState({ title: "", category: "", location: "", price: "", description: "", start_date: "", end_date: "" });
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
@@ -185,7 +185,7 @@ const Profile = () => {
 
   const openEdit = (ad: Ad) => {
     setEditAd(ad);
-    setEditForm({ title: ad.title, category: ad.category, location: ad.location, price: String(ad.price), description: ad.description });
+    setEditForm({ title: ad.title, category: ad.category, location: ad.location, price: String(ad.price), description: ad.description, start_date: ad.start_date, end_date: ad.end_date });
   };
 
   const handleEditSave = async () => {
@@ -196,6 +196,8 @@ const Profile = () => {
       location: editForm.location,
       price: Number(editForm.price),
       description: editForm.description,
+      start_date: editForm.start_date,
+      end_date: editForm.end_date,
     }).eq("id", editAd.id);
     if (error) {
       toast.error("Greška pri izmeni oglasa");
@@ -409,8 +411,8 @@ const Profile = () => {
           <div className="space-y-3 pt-2">
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Naslov</label>
-              <input maxLength={20} value={editForm.title} onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
-              <p className="mt-1 text-xs text-muted-foreground">{editForm.title.length}/20</p>
+              <input maxLength={30} value={editForm.title} onChange={(e) => { if (e.target.value.length <= 30) setEditForm((f) => ({ ...f, title: e.target.value })); }} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <p className="mt-1 text-xs text-muted-foreground">{editForm.title.length}/30</p>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Kategorija</label>
@@ -432,6 +434,16 @@ const Profile = () => {
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Cena</label>
               <input type="number" value={editForm.price} onChange={(e) => setEditForm((f) => ({ ...f, price: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground">Datum početka</label>
+                <input type="date" value={editForm.start_date} onChange={(e) => setEditForm((f) => ({ ...f, start_date: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground">Datum završetka</label>
+                <input type="date" value={editForm.end_date} min={editForm.start_date} onChange={(e) => setEditForm((f) => ({ ...f, end_date: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              </div>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Opis</label>
