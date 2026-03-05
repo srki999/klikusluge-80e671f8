@@ -240,6 +240,7 @@ const Index = () => {
           KLIK USLUGE
         </h1>
         <div className="flex items-center gap-2">
+          <AdminButton />
           <NotificationBell />
           <button
             onClick={() => navigate(user ? "/profile" : "/auth")}
