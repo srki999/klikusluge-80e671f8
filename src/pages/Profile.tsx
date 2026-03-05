@@ -411,8 +411,8 @@ const Profile = () => {
           <div className="space-y-3 pt-2">
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Naslov</label>
-              <input maxLength={20} value={editForm.title} onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
-              <p className="mt-1 text-xs text-muted-foreground">{editForm.title.length}/20</p>
+              <input maxLength={30} value={editForm.title} onChange={(e) => { if (e.target.value.length <= 30) setEditForm((f) => ({ ...f, title: e.target.value })); }} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <p className="mt-1 text-xs text-muted-foreground">{editForm.title.length}/30</p>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Kategorija</label>
