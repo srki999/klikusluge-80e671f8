@@ -243,7 +243,15 @@ const Index = () => {
           KLIK USLUGE
         </h1>
         <div className="flex items-center gap-2">
-          <AdminButton />
+          {isAdmin && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="flex items-center justify-center rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 p-2 transition hover:bg-primary-foreground/25"
+              title="Admin panel"
+            >
+              <ShieldCheck size={20} className="text-primary-foreground" />
+            </button>
+          )}
           <NotificationBell />
           <button
             onClick={() => navigate(user ? "/profile" : "/auth")}
