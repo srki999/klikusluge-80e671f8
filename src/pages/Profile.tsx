@@ -185,7 +185,7 @@ const Profile = () => {
 
   const openEdit = (ad: Ad) => {
     setEditAd(ad);
-    setEditForm({ title: ad.title, category: ad.category, location: ad.location, price: String(ad.price), description: ad.description });
+    setEditForm({ title: ad.title, category: ad.category, location: ad.location, price: String(ad.price), description: ad.description, start_date: ad.start_date, end_date: ad.end_date });
   };
 
   const handleEditSave = async () => {
