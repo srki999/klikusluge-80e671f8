@@ -476,14 +476,16 @@ const Index = () => {
                 <Calendar size={16} className="shrink-0" />
                 <span>{formatDate(selectedAd.start_date)} – {formatDate(selectedAd.end_date)}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <User size={16} className="shrink-0" />
-                {adOwner ? (
-                  <span>{adOwner.ime} {adOwner.prezime}</span>
-                ) : (
-                  <span className="animate-pulse">Učitavanje...</span>
-                )}
-              </div>
+              {user && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <User size={16} className="shrink-0" />
+                  {adOwner ? (
+                    <span>{adOwner.ime} {adOwner.prezime}</span>
+                  ) : (
+                    <span className="animate-pulse">Učitavanje...</span>
+                  )}
+                </div>
+              )}
               {(!user || user.id !== selectedAd.user_id) && (
                 <button
                   onClick={() => {
