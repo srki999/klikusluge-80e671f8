@@ -157,23 +157,25 @@ const Admin = () => {
 
   const handleDeleteProfile = async (profile: ProfileRow) => {
     try {
+      // Send email notification first (before account is deleted)
       await supabase.functions.invoke("admin-notify", {
         body: { target_user_id: profile.user_id, type: "profile_deleted" },
       });
     } catch (e) {
       console.error("Email notification failed", e);
     }
-    const { error } = await supabase.from("profiles").delete().eq("user_id", profile.user_id);
-    if (error) {
-      toast({ title: "Greška", description: "Nije moguće obrisati profil.", variant: "destructive" });
-      return;
-    }
     try {
-      await supabase.functions.invoke("admin-notify", {
+      // Edge function handles: notifications, applications, ads, profile, roles, sign out + auth user deletion
+      const { error } = await supabase.functions.invoke("admin-notify", {
         body: { target_user_id: profile.user_id, type: "delete_auth_user" },
       });
+      if (error) {
+        toast({ title: "Greška", description: "Nije moguće obrisati profil.", variant: "destructive" });
+        return;
+      }
     } catch (e) {
-      console.error("Auth user deletion failed", e);
+      toast({ title: "Greška", description: "Nije moguće obrisati profil.", variant: "destructive" });
+      return;
     }
     setProfiles((prev) => prev.filter((p) => p.user_id !== profile.user_id));
     if (selectedProfile?.user_id === profile.user_id) {
