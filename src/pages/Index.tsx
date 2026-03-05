@@ -50,6 +50,7 @@ interface Ad {
 
 const Index = () => {
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [userSub, setUserSub] = useState<{ plan_name: string; end_date: string } | null>(null);
