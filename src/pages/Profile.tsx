@@ -380,6 +380,16 @@ const Profile = () => {
                       </span>
                     </div>
                     <div className="flex shrink-0 gap-2">
+                      {ad.status === "pending_payment" && (
+                        <button
+                          onClick={() => navigate("/placanje", { state: { ad } })}
+                          className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs font-bold text-secondary-foreground shadow transition hover:opacity-90"
+                          style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}
+                          title="Dovrši uplatu"
+                        >
+                          <CreditCard size={14} /> Plati
+                        </button>
+                      )}
                       <button
                         onClick={() => openEdit(ad)}
                         className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-primary/10 hover:text-primary"
