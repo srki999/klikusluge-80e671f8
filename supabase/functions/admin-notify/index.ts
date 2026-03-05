@@ -144,6 +144,17 @@ Deno.serve(async (req) => {
     }
 
     if (type === "delete_auth_user" && target_user_id) {
+      // 1. Delete all notifications where this user is the applicant
+      await supabase.from("notifications").delete().eq("applicant_id", target_user_id);
+      // 2. Delete all notifications for this user
+      await supabase.from("notifications").delete().eq("user_id", target_user_id);
+      // 3. Delete all applications by this user
+      await supabase.from("applications").delete().eq("user_id", target_user_id);
+      // 4. Delete all ads by this user
+      await supabase.from("ads").delete().eq("user_id", target_user_id);
+      // 5. Sign out user from all devices
+      await supabase.auth.admin.signOut(target_user_id, 'global');
+      // 6. Delete the auth user
       await supabase.auth.admin.deleteUser(target_user_id);
     }
 
