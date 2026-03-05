@@ -344,10 +344,7 @@ const Index = () => {
           </div>
 
           {/* Search bar */}
-          <form
-            onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
-            className="mb-8 flex overflow-hidden rounded-xl border border-border bg-popover shadow-sm"
-          >
+          <div className="mb-8 flex overflow-hidden rounded-xl border border-border bg-popover shadow-sm">
             <input
               type="text"
               placeholder="Pretraži po kategoriji, mestu ili opisu..."
@@ -355,10 +352,10 @@ const Index = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
             />
-            <button type="submit" className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground transition hover:bg-primary">
+            <div className="flex w-12 items-center justify-center bg-primary/90 text-primary-foreground">
               <Search size={18} />
-            </button>
-          </form>
+            </div>
+          </div>
 
           {/* Category filters */}
           <div className="mb-6">
