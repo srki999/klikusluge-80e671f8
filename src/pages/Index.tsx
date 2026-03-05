@@ -46,6 +46,21 @@ interface Ad {
   user_id: string;
 }
 
+const AdminButton = () => {
+  const { isAdmin } = useAdmin();
+  const navigate = useNavigate();
+  if (!isAdmin) return null;
+  return (
+    <button
+      onClick={() => navigate("/admin")}
+      className="flex items-center justify-center rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 p-2 transition hover:bg-primary-foreground/25"
+      title="Admin panel"
+    >
+      <ShieldCheck size={20} className="text-primary-foreground" />
+    </button>
+  );
+};
+
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
