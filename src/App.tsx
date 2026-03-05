@@ -14,6 +14,7 @@ import Pretplata from "./pages/Pretplata";
 import PlacanjePretplate from "./pages/PlacanjePretplate";
 import Kontakt from "./pages/Kontakt";
 import ForgotPassword from "./pages/ForgotPassword";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/placanje-pretplate" element={<PlacanjePretplate />} />
             <Route path="/kontakt" element={<Kontakt />} />
             <Route path="/zaboravljena-lozinka" element={<ForgotPassword />} />
+            <Route path="/admin" element={<Admin />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>

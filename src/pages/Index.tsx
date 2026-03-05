@@ -1,4 +1,4 @@
-import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText, Filter, MessageCircle } from "lucide-react";
+import { Search, UserCircle, Loader2, ArrowUp, MapPin, Calendar, Banknote, User, X, FileText, Filter, MessageCircle, ShieldCheck } from "lucide-react";
 import ApplyModal from "@/components/ApplyModal";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
+import { useAdmin } from "@/hooks/useAdmin";
 import badgeBronza from "@/assets/badge-bronza.png";
 import badgeSrebro from "@/assets/badge-srebro.png";
 import badgeZlato from "@/assets/badge-zlato.png";
@@ -44,6 +45,21 @@ interface Ad {
   created_at: string;
   user_id: string;
 }
+
+const AdminButton = () => {
+  const { isAdmin } = useAdmin();
+  const navigate = useNavigate();
+  if (!isAdmin) return null;
+  return (
+    <button
+      onClick={() => navigate("/admin")}
+      className="flex items-center justify-center rounded-full border-2 border-primary-foreground/30 bg-primary-foreground/15 p-2 transition hover:bg-primary-foreground/25"
+      title="Admin panel"
+    >
+      <ShieldCheck size={20} className="text-primary-foreground" />
+    </button>
+  );
+};
 
 const Index = () => {
   const { user } = useAuth();
@@ -239,6 +255,7 @@ const Index = () => {
           KLIK USLUGE
         </h1>
         <div className="flex items-center gap-2">
+          <AdminButton />
           <NotificationBell />
           <button
             onClick={() => navigate(user ? "/profile" : "/auth")}
