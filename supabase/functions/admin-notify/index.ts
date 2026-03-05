@@ -152,7 +152,11 @@ Deno.serve(async (req) => {
       await supabase.from("applications").delete().eq("user_id", target_user_id);
       // 4. Delete all ads by this user
       await supabase.from("ads").delete().eq("user_id", target_user_id);
-      // 5. Delete the auth user (this also invalidates all sessions)
+      // 5. Delete profile
+      await supabase.from("profiles").delete().eq("user_id", target_user_id);
+      // 6. Delete user roles
+      await supabase.from("user_roles").delete().eq("user_id", target_user_id);
+      // 7. Delete the auth user (this also invalidates all sessions on all devices)
       await supabase.auth.admin.deleteUser(target_user_id);
     }
 
