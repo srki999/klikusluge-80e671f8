@@ -196,6 +196,8 @@ const Profile = () => {
       location: editForm.location,
       price: Number(editForm.price),
       description: editForm.description,
+      start_date: editForm.start_date,
+      end_date: editForm.end_date,
     }).eq("id", editAd.id);
     if (error) {
       toast.error("Greška pri izmeni oglasa");
