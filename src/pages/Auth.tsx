@@ -107,7 +107,11 @@ const Auth = () => {
           password: form.password,
         });
         if (error) {
-          toast.error("Pogrešan email ili lozinka");
+          if (error.message === "Email not confirmed") {
+            toast.error("Identitet naloga nije potvrđen. Proverite vaš email za potvrdu.");
+          } else {
+            toast.error("Pogrešan email ili lozinka");
+          }
           setLoading(false);
           return;
         }
