@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
 
     // Verify caller is admin or super_admin
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -30,19 +30,27 @@ Deno.serve(async (req) => {
     }
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: { user: caller } } = await supabase.auth.getUser(token);
-    if (!caller) {
+    
+    // Create a client with the user's auth context for getClaims
+    const userClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    
+    const { data: claimsData, error: claimsError } = await userClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Check admin or super_admin role
+    const callerId = claimsData.claims.sub;
+
+    // Check admin or super_admin role using service role client
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", caller.id);
+      .eq("user_id", callerId);
 
     const callerRoles = (roleData || []).map((r: any) => r.role);
     if (!callerRoles.includes("admin") && !callerRoles.includes("super_admin")) {
