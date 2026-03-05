@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import nodemailer from "npm:nodemailer@6.9.16";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -58,7 +59,7 @@ Deno.serve(async (req) => {
     // Find user by email
     if (type === "find_user_by_email") {
       const { data: { users } } = await supabase.auth.admin.listUsers();
-      const found = users?.find((u: any) => u.email === email);
+      const found = users?.find((u: any) => u.email?.toLowerCase() === email?.toLowerCase());
       if (!found) {
         return new Response(JSON.stringify({ error: "User not found" }), {
           status: 404,
@@ -70,6 +71,14 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Email transporter
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: { user: gmailUser, pass: gmailAppPassword },
+    });
+
     // Get target user email
     let targetEmail = "";
     if (target_user_id) {
@@ -77,116 +86,40 @@ Deno.serve(async (req) => {
       targetEmail = targetUser?.email || "";
     }
 
-    const sendEmail = async (to: string, subject: string, htmlBody: string) => {
-      // Use SMTP via Gmail
-      const response = await fetch("https://api.smtp2go.com/v3/email/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      // Fallback: use a simple fetch to send via the existing edge function pattern
-      // Actually, let's use a direct SMTP approach via gmail
-      const emailPayload = {
-        to,
-        subject,
-        html: htmlBody,
-      };
-
-      // Send via Deno's built-in capabilities using Gmail SMTP
-      const encoder = new TextEncoder();
-      const credentials = btoa(`${gmailUser}:${gmailAppPassword}`);
-      
-      // Use Gmail API via HTTP
-      const boundary = "boundary_" + Date.now();
-      const rawEmail = [
-        `From: Klik Usluge <${gmailUser}>`,
-        `To: ${to}`,
-        `Subject: ${subject}`,
-        `MIME-Version: 1.0`,
-        `Content-Type: text/html; charset=UTF-8`,
-        ``,
-        htmlBody,
-      ].join("\r\n");
-
-      const encodedMessage = btoa(unescape(encodeURIComponent(rawEmail)))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
-
-      // Use nodemailer-like approach with fetch to Gmail SMTP relay
-      // For simplicity, we'll use the same pattern as the existing send-otp function
-      const smtpResponse = await fetch(`https://api.mailgun.net/v3/sandbox.mailgun.org/messages`, {
-        method: "POST",
-      }).catch(() => null);
-
-      // Direct approach: connect to smtp.gmail.com
-      const conn = await Deno.connectTls({
-        hostname: "smtp.gmail.com",
-        port: 465,
-      });
-
-      const read = async () => {
-        const buf = new Uint8Array(1024);
-        const n = await conn.read(buf);
-        return new TextDecoder().decode(buf.subarray(0, n || 0));
-      };
-
-      const write = async (cmd: string) => {
-        await conn.write(encoder.encode(cmd + "\r\n"));
-        return await read();
-      };
-
-      await read(); // greeting
-      await write("EHLO localhost");
-      await write(`AUTH LOGIN`);
-      await write(btoa(gmailUser));
-      await write(btoa(gmailAppPassword));
-      await write(`MAIL FROM:<${gmailUser}>`);
-      await write(`RCPT TO:<${to}>`);
-      await write("DATA");
-      await conn.write(encoder.encode(
-        `From: Klik Usluge <${gmailUser}>\r\n` +
-        `To: ${to}\r\n` +
-        `Subject: ${subject}\r\n` +
-        `MIME-Version: 1.0\r\n` +
-        `Content-Type: text/html; charset=UTF-8\r\n` +
-        `\r\n` +
-        htmlBody +
-        `\r\n.\r\n`
-      ));
-      await read();
-      await write("QUIT");
-      conn.close();
-    };
-
     if (type === "ad_deleted" && targetEmail) {
-      await sendEmail(
-        targetEmail,
-        "Vaš oglas je uklonjen - Klik Usluge",
-        `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:20px;">
-          <h2 style="color:#3b5998;">Klik Usluge - Obaveštenje</h2>
-          <p>Poštovani,</p>
-          <p>Vaš oglas <strong>"${ad_title || "Oglas"}"</strong> je uklonjen od strane administratora.</p>
-          <p>Ukoliko smatrate da je došlo do greške, kontaktirajte nas putem kontakt stranice na sajtu.</p>
-          <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
-          <p style="font-size:12px;color:#999;">Klik Usluge tim</p>
-        </div>`
-      );
+      await transporter.sendMail({
+        from: `"Klik Usluge" <${gmailUser}>`,
+        to: targetEmail,
+        subject: "Vaš oglas je uklonjen - Klik Usluge",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 32px; background: #ffffff; border-radius: 16px;">
+            <h2 style="text-align: center; color: #3b5998; margin-bottom: 16px;">Klik Usluge</h2>
+            <p>Poštovani,</p>
+            <p>Vaš oglas <strong>"${ad_title || "Oglas"}"</strong> je uklonjen od strane administratora.</p>
+            <p>Ukoliko smatrate da je došlo do greške, kontaktirajte nas putem kontakt stranice na sajtu.</p>
+            <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
+            <p style="font-size:12px;color:#999;text-align:center;">Klik Usluge tim</p>
+          </div>
+        `,
+      });
     }
 
     if (type === "profile_deleted" && targetEmail) {
-      await sendEmail(
-        targetEmail,
-        "Vaš nalog je uklonjen - Klik Usluge",
-        `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:20px;">
-          <h2 style="color:#3b5998;">Klik Usluge - Obaveštenje</h2>
-          <p>Poštovani,</p>
-          <p>Vaš nalog na platformi Klik Usluge je uklonjen od strane administratora.</p>
-          <p>Ukoliko smatrate da je došlo do greške, kontaktirajte nas putem email adrese.</p>
-          <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
-          <p style="font-size:12px;color:#999;">Klik Usluge tim</p>
-        </div>`
-      );
+      await transporter.sendMail({
+        from: `"Klik Usluge" <${gmailUser}>`,
+        to: targetEmail,
+        subject: "Vaš nalog je uklonjen - Klik Usluge",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 32px; background: #ffffff; border-radius: 16px;">
+            <h2 style="text-align: center; color: #3b5998; margin-bottom: 16px;">Klik Usluge</h2>
+            <p>Poštovani,</p>
+            <p>Vaš nalog na platformi Klik Usluge je uklonjen od strane administratora.</p>
+            <p>Ukoliko smatrate da je došlo do greške, kontaktirajte nas putem email adrese.</p>
+            <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
+            <p style="font-size:12px;color:#999;text-align:center;">Klik Usluge tim</p>
+          </div>
+        `,
+      });
     }
 
     if (type === "delete_auth_user" && target_user_id) {
