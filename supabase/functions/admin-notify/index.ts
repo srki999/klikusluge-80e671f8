@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Verify caller is admin
+    // Verify caller is admin or super_admin
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -38,15 +38,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check admin role
+    // Check admin or super_admin role
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", caller.id)
-      .eq("role", "admin")
-      .maybeSingle();
+      .eq("user_id", caller.id);
 
-    if (!roleData) {
+    const callerRoles = (roleData || []).map((r: any) => r.role);
+    if (!callerRoles.includes("admin") && !callerRoles.includes("super_admin")) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -54,7 +53,21 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { type, target_user_id, ad_title, email } = body;
+    const { type, target_user_id, ad_title, email, user_ids } = body;
+
+    // Get user emails in bulk
+    if (type === "get_user_emails") {
+      const emailMap: Record<string, string> = {};
+      if (user_ids && Array.isArray(user_ids)) {
+        for (const uid of user_ids) {
+          const { data: { user: u } } = await supabase.auth.admin.getUserById(uid);
+          if (u?.email) emailMap[uid] = u.email;
+        }
+      }
+      return new Response(JSON.stringify({ emails: emailMap }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Find user by email
     if (type === "find_user_by_email") {
