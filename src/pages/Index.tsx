@@ -164,6 +164,25 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Realtime subscription for ads changes
+  useEffect(() => {
+    const channel = supabase
+      .channel('ads-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'ads' },
+        () => {
+          // Re-fetch ads on any change
+          offsetRef.current = 0;
+          setHasMore(true);
+          fetchAds(true);
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Infinite scroll observer
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
