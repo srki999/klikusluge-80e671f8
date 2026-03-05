@@ -80,6 +80,7 @@ interface Ad {
   end_date: string;
   description: string;
   status: string;
+  prominence_level: number;
 }
 
 const Profile = () => {
