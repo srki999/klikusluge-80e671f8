@@ -95,7 +95,7 @@ const Profile = () => {
   const [showEditLocationSuggestions, setShowEditLocationSuggestions] = useState(false);
 
   const [editingProfile, setEditingProfile] = useState(false);
-  const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
+  const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "", iskustva: "" });
   const [profileCountryCode, setProfileCountryCode] = useState("+381");
   const [showProfileCountryDropdown, setShowProfileCountryDropdown] = useState(false);
 
@@ -129,17 +129,24 @@ const Profile = () => {
 
   const handleProfileSave = async () => {
     if (!user) return;
+    const phoneDigits = profileForm.telefon.replace(/\D/g, "");
+    const requiredDigits = phoneDigits.startsWith("0") ? 10 : 9;
+    if (phoneDigits.length !== requiredDigits) {
+      toast.error(`Broj telefona mora imati tačno ${requiredDigits} cifara`);
+      return;
+    }
     const fullPhone = `${profileCountryCode} ${profileForm.telefon.trim()}`;
     const { error } = await supabase.from("profiles").update({
       ime: profileForm.ime.trim(),
       prezime: profileForm.prezime.trim(),
       telefon: fullPhone,
+      iskustva: profileForm.iskustva.trim(),
     }).eq("user_id", user.id);
     if (error) {
       toast.error("Greška pri čuvanju podataka");
     } else {
       toast.success("Podaci su sačuvani");
-      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: fullPhone } : prev);
+      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: fullPhone, iskustva: profileForm.iskustva.trim() } : prev);
       setEditingProfile(false);
     }
   };
@@ -286,7 +293,10 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-              {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
+              <div>
+                <label className="mb-1 block font-semibold">Iskustva</label>
+                <textarea value={profileForm.iskustva} onChange={(e) => setProfileForm((f) => ({ ...f, iskustva: e.target.value }))} rows={3} className="w-full resize-none rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
+              </div>
               <div className="flex gap-2">
                 <button onClick={handleProfileSave} className="flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90" style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}>
                   <Save size={16} /> Sačuvaj
@@ -303,7 +313,7 @@ const Profile = () => {
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Telefon:</span> {profile.telefon}</div>
               {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
-              <button onClick={() => { const parsed = parseStoredPhone(profile.telefon); setProfileForm({ ime: profile.ime, prezime: profile.prezime, telefon: parsed.phone }); setProfileCountryCode(parsed.countryCode); setEditingProfile(true); }} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
+              <button onClick={() => { const parsed = parseStoredPhone(profile.telefon); setProfileForm({ ime: profile.ime, prezime: profile.prezime, telefon: parsed.phone, iskustva: profile.iskustva }); setProfileCountryCode(parsed.countryCode); setEditingProfile(true); }} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
                 <Pencil size={16} /> Izmeni podatke
               </button>
             </div>
@@ -485,7 +495,7 @@ const Profile = () => {
               )}
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-foreground">Cena</label>
+              <label className="mb-1 block text-sm font-medium text-foreground">Cena ({editAd?.currency || "RSD"})</label>
               <input type="number" value={editForm.price} onChange={(e) => setEditForm((f) => ({ ...f, price: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div className="grid grid-cols-2 gap-3">
