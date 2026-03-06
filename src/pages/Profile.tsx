@@ -495,7 +495,7 @@ const Profile = () => {
               )}
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-foreground">Cena</label>
+              <label className="mb-1 block text-sm font-medium text-foreground">Cena ({editAd?.currency || "RSD"})</label>
               <input type="number" value={editForm.price} onChange={(e) => setEditForm((f) => ({ ...f, price: e.target.value }))} className="w-full rounded-xl border border-border bg-popover px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div className="grid grid-cols-2 gap-3">

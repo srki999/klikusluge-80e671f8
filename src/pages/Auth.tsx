@@ -142,7 +142,11 @@ const Auth = () => {
           },
         });
         if (error) {
-          toast.error(error.message);
+          if (error.message?.includes("already registered") || error.message?.includes("already been registered")) {
+            toast.error("Nalog sa ovom email adresom već postoji. Prijavite se.");
+          } else {
+            toast.error(error.message);
+          }
           setLoading(false);
           return;
         }
