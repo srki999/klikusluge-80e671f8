@@ -293,7 +293,10 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-              {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
+              <div>
+                <label className="mb-1 block font-semibold">Iskustva</label>
+                <textarea value={profileForm.iskustva} onChange={(e) => setProfileForm((f) => ({ ...f, iskustva: e.target.value }))} rows={3} className="w-full resize-none rounded-xl border border-border bg-popover px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring" />
+              </div>
               <div className="flex gap-2">
                 <button onClick={handleProfileSave} className="flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90" style={{ background: "linear-gradient(135deg, hsl(30 100% 50%), hsl(30 95% 55%))" }}>
                   <Save size={16} /> Sačuvaj
