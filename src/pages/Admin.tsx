@@ -281,7 +281,7 @@ const Admin = () => {
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl p-6 space-y-8">
+      <div className="mx-auto max-w-5xl p-3 sm:p-6 space-y-6 sm:space-y-8">
         {/* Add admin section - only for super admins */}
         {isSuperAdmin && (
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
@@ -339,99 +339,98 @@ const Admin = () => {
             return (
               <div
                 key={profile.id}
-                className="group flex items-center justify-between rounded-2xl border border-border bg-card px-6 py-4 shadow-sm transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md"
+                className="group rounded-2xl border border-border bg-card px-4 sm:px-6 py-4 shadow-sm transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md overflow-hidden"
                 style={{ background: "linear-gradient(135deg, hsl(220 15% 96%), hsl(220 15% 93%))" }}
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <UserCircle size={32} className="text-muted-foreground shrink-0" />
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-base font-semibold text-foreground">
-                        {profile.ime} {profile.prezime}
-                      </span>
+                <div className="flex items-start sm:items-center justify-between gap-2 sm:gap-3">
+                  <div className="flex items-start sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <UserCircle size={28} className="text-muted-foreground shrink-0 mt-0.5 sm:mt-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-sm sm:text-base font-semibold text-foreground break-words">
+                          {profile.ime} {profile.prezime}
+                        </span>
+                        {isProfileSuperAdmin && (
+                          <span className="rounded-full bg-destructive/15 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-destructive whitespace-nowrap">
+                            Super Admin
+                          </span>
+                        )}
+                        {isProfileAdmin && (
+                          <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-primary whitespace-nowrap">
+                            Admin
+                          </span>
+                        )}
+                      </div>
                       {profile.email && (
-                        <span className="text-xs text-muted-foreground">
-                          ({profile.email})
-                        </span>
+                        <p className="text-[11px] sm:text-xs text-muted-foreground break-all">{profile.email}</p>
                       )}
-                      {isProfileSuperAdmin && (
-                        <span className="rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-destructive">
-                          Super Admin
-                        </span>
-                      )}
-                      {isProfileAdmin && (
-                        <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-                          Admin
-                        </span>
-                      )}
+                      <p className="text-[11px] sm:text-xs text-muted-foreground">{profile.telefon || "Nema telefona"}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">{profile.telefon || "Nema telefona"}</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    onClick={() => openProfileAds(profile)}
-                    className="rounded-lg bg-accent/20 px-3 py-2 text-xs font-semibold text-accent-foreground transition hover:bg-accent/40"
-                    title="Pogledaj oglase"
-                  >
-                    <Eye size={16} />
-                  </button>
-                  {/* Super admin can remove admin role from regular admins */}
-                  {isSuperAdmin && isProfileAdmin && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <button
-                          className="rounded-lg bg-orange-100 px-3 py-2 text-xs font-semibold text-orange-700 transition hover:bg-orange-200"
-                          title="Ukloni admin ulogu"
-                        >
-                          <ShieldMinus size={16} />
-                        </button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Ukloni admin ulogu</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Da li ste sigurni da želite da uklonite admin ulogu korisniku {profile.ime} {profile.prezime}?
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Ne</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleRemoveAdmin(profile)}>
-                            Ukloni
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
-                  {canDeleteProfile && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <button
-                          className="rounded-lg bg-destructive/10 px-3 py-2 text-xs font-semibold text-destructive transition hover:bg-destructive/20"
-                          title="Obriši profil"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Brisanje profila</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Da li ste sigurni da želite da obrišete profil korisnika {profile.ime} {profile.prezime}? Ova akcija se ne može poništiti.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Ne</AlertDialogCancel>
-                          <AlertDialogAction
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                            onClick={() => handleDeleteProfile(profile)}
+                  <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button
+                      onClick={() => openProfileAds(profile)}
+                      className="rounded-lg bg-accent/20 p-2 text-xs font-semibold text-accent-foreground transition hover:bg-accent/40"
+                      title="Pogledaj oglase"
+                    >
+                      <Eye size={15} />
+                    </button>
+                    {isSuperAdmin && isProfileAdmin && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <button
+                            className="rounded-lg bg-orange-100 p-2 text-xs font-semibold text-orange-700 transition hover:bg-orange-200"
+                            title="Ukloni admin ulogu"
                           >
-                            Obriši
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
+                            <ShieldMinus size={15} />
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Ukloni admin ulogu</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Da li ste sigurni da želite da uklonite admin ulogu korisniku {profile.ime} {profile.prezime}?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Ne</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleRemoveAdmin(profile)}>
+                              Ukloni
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                    {canDeleteProfile && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <button
+                            className="rounded-lg bg-destructive/10 p-2 text-xs font-semibold text-destructive transition hover:bg-destructive/20"
+                            title="Obriši profil"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Brisanje profila</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Da li ste sigurni da želite da obrišete profil korisnika {profile.ime} {profile.prezime}? Ova akcija se ne može poništiti.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Ne</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              onClick={() => handleDeleteProfile(profile)}
+                            >
+                              Obriši
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </div>
               </div>
             );

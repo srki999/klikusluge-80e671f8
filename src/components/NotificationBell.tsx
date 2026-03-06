@@ -214,7 +214,7 @@ const NotificationBell = () => {
                     >
                       <X size={14} />
                     </button>
-                    <p className="text-foreground">{n.message}</p>
+                    <p className="text-foreground whitespace-pre-wrap break-words">{n.message}</p>
                     <div className="mt-1 flex items-center justify-between">
                       <p className="text-xs text-muted-foreground">
                         {timeAgo(n.created_at)}
