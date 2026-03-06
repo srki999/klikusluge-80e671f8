@@ -95,7 +95,7 @@ const Profile = () => {
   const [showEditLocationSuggestions, setShowEditLocationSuggestions] = useState(false);
 
   const [editingProfile, setEditingProfile] = useState(false);
-  const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "" });
+  const [profileForm, setProfileForm] = useState({ ime: "", prezime: "", telefon: "", iskustva: "" });
   const [profileCountryCode, setProfileCountryCode] = useState("+381");
   const [showProfileCountryDropdown, setShowProfileCountryDropdown] = useState(false);
 
