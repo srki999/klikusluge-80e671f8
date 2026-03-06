@@ -313,7 +313,7 @@ const Profile = () => {
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Email:</span> {user?.email}</div>
               <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Telefon:</span> {profile.telefon}</div>
               {profile.iskustva && <div className="rounded-xl bg-muted px-4 py-3"><span className="font-semibold">Iskustva:</span> {profile.iskustva}</div>}
-              <button onClick={() => { const parsed = parseStoredPhone(profile.telefon); setProfileForm({ ime: profile.ime, prezime: profile.prezime, telefon: parsed.phone }); setProfileCountryCode(parsed.countryCode); setEditingProfile(true); }} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
+              <button onClick={() => { const parsed = parseStoredPhone(profile.telefon); setProfileForm({ ime: profile.ime, prezime: profile.prezime, telefon: parsed.phone, iskustva: profile.iskustva }); setProfileCountryCode(parsed.countryCode); setEditingProfile(true); }} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground transition hover:bg-muted">
                 <Pencil size={16} /> Izmeni podatke
               </button>
             </div>
