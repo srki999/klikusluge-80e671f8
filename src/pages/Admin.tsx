@@ -281,7 +281,7 @@ const Admin = () => {
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl p-6 space-y-8">
+      <div className="mx-auto max-w-5xl p-3 sm:p-6 space-y-6 sm:space-y-8">
         {/* Add admin section - only for super admins */}
         {isSuperAdmin && (
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
