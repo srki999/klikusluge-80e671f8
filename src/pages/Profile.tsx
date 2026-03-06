@@ -129,17 +129,24 @@ const Profile = () => {
 
   const handleProfileSave = async () => {
     if (!user) return;
+    const phoneDigits = profileForm.telefon.replace(/\D/g, "");
+    const requiredDigits = phoneDigits.startsWith("0") ? 10 : 9;
+    if (phoneDigits.length !== requiredDigits) {
+      toast.error(`Broj telefona mora imati tačno ${requiredDigits} cifara`);
+      return;
+    }
     const fullPhone = `${profileCountryCode} ${profileForm.telefon.trim()}`;
     const { error } = await supabase.from("profiles").update({
       ime: profileForm.ime.trim(),
       prezime: profileForm.prezime.trim(),
       telefon: fullPhone,
+      iskustva: profileForm.iskustva.trim(),
     }).eq("user_id", user.id);
     if (error) {
       toast.error("Greška pri čuvanju podataka");
     } else {
       toast.success("Podaci su sačuvani");
-      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: fullPhone } : prev);
+      setProfile((prev) => prev ? { ...prev, ime: profileForm.ime.trim(), prezime: profileForm.prezime.trim(), telefon: fullPhone, iskustva: profileForm.iskustva.trim() } : prev);
       setEditingProfile(false);
     }
   };
