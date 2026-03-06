@@ -128,7 +128,7 @@ const Auth = () => {
           setLoading(false);
           return;
         }
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
           options: {
@@ -147,6 +147,12 @@ const Auth = () => {
           } else {
             toast.error(error.message);
           }
+          setLoading(false);
+          return;
+        }
+        // Supabase with email confirmation disabled returns user with identities=[] for existing emails
+        if (data?.user && data.user.identities && data.user.identities.length === 0) {
+          toast.error("Nalog sa ovom email adresom već postoji. Prijavite se.");
           setLoading(false);
           return;
         }
