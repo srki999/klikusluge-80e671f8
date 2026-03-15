@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 import PrivacyPolicySection from "@/components/PrivacyPolicySection";
+import { toast } from "sonner";
 
 const AD_BASE_PRICE = 500; // RSD
 
@@ -89,11 +90,18 @@ const Placanje = () => {
 
     await new Promise((r) => setTimeout(r, 2000));
 
-    await supabase.from("ads").update({ status: "active" }).eq("id", ad.id);
+    const { error } = await supabase.from("ads").update({ status: "active" }).eq("id", ad.id);
 
     setProcessing(false);
+
+    if (error) {
+      toast.error("Greška prilikom aktivacije oglasa. Pokušajte ponovo.");
+      console.error("Payment update error:", error);
+      return;
+    }
+
     setSuccess(true);
-    setTimeout(() => navigate("/"), 2000);
+    setTimeout(() => navigate("/profil"), 2000);
   };
 
   return (
