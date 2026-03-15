@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 import PrivacyPolicySection from "@/components/PrivacyPolicySection";
+import { toast } from "sonner";
 
 const AD_BASE_PRICE = 500; // RSD
 
