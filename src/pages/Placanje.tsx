@@ -101,7 +101,7 @@ const Placanje = () => {
     }
 
     setSuccess(true);
-    setTimeout(() => navigate("/profil"), 2000);
+    setTimeout(() => navigate("/"), 2000);
   };
 
   return (
